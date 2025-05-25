@@ -21,10 +21,10 @@ Desarrollar un sistema en **C++** para la gestión de pacientes, citas, tratamie
 
 ## 🧑‍🤝‍🧑 Integrantes
 
-- Integrante 1: FRANKLIN ESTEBAN PEREZ FUENTES – Interfaz UI/UX
-- Integrante 2: Hector Danilo Benítez Ortéz – 
-- Integrante 3: Rafael Armando Ibañez Diego – 
-- Integrante 4: Luis Daniel Contreras Rivera – 
-- Integrante 5: Eileen Marisol Reyes Rodríguez – 
+- Integrante 1: FRANKLIN ESTEBAN PEREZ FUENTES – Login
+- Integrante 2: Héctor Danilo Benítez Ortéz – GESTIÓN DE INVENTARIO
+- Integrante 3: Rafael Armando Ibañez Diego – GESTIÓN DE PACIENTES
+- Integrante 4: Luis Daniel Contreras Rivera – GESTIÓN DE CITAS
+- Integrante 5: Eileen Marisol Reyes Rodríguez – GESTIÓN DE TRATAMIENTOS
 
 
