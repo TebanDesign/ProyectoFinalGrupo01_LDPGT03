@@ -40,3 +40,34 @@ cmake --build .
 ```
 
 ---
+---
+
+# Instalación y Configuración de FTXUI
+
+Para integrar FTXUI en tu proyecto, sigue estos pasos:
+
+## 1. Descargar FTXUI
+
+Para asegurar una versión estable y evitar incompatibilidades por cambios continuos, descarga el proyecto FTXUI como un archivo ZIP desde el siguiente enlace:
+
+* **[https://github.com/ArthurSonzogni/FTXUI](https://github.com/ArthurSonzogni/FTXUI)**
+
+## 2. Descomprimir y Renombrar
+
+Una vez descargado, **descomprime** el archivo ZIP. Luego, mueve la carpeta resultante a tu directorio `extern` y **renómbrala** a `ftxui`.
+
+## 3. Actualizar `CMakeLists.txt`
+
+Debes incluir FTXUI en tu configuración de CMake. Abre tu archivo `CMakeLists.txt` y añade la siguiente línea:
+
+```cmake
+add_subdirectory(extern/ftxui)
+```
+
+Asegúrate de colocar esta línea **antes** de la siguiente instrucción en tu `CMakeLists.txt`:
+
+```cmake
+add_executable(ClinicaDentalRP)
+```
+
+
