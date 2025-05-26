@@ -1,6 +1,4 @@
-#ifndef CITA_MENU_H
-#define CITA_MENU_H
-
+#pragma once
 #include <iostream>
 
 class CitasMenu {
@@ -15,4 +13,3 @@ public:
     void ejecutar();
 };
 
-#endif

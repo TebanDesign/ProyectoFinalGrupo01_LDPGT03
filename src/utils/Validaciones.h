@@ -1,6 +1,4 @@
-#ifndef VALIDACIONES_H
-#define VALIDACIONES_H
-
+#pragma once
 #include <string> 
 
 /**
@@ -38,5 +36,3 @@ private:
      */
     static bool esDigito(char c);
 };
-
-#endif

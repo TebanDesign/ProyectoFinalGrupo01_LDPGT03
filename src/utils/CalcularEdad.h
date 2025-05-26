@@ -1,6 +1,4 @@
-#ifndef CALCULAREDAD_H
-#define CALCULAREDAD_H
-
+#pragma once
 #include <iostream>
 
 class CalcularEdad {
@@ -12,4 +10,3 @@ public:
     static std::string CalcularAsignarEdad(std::string fechaNacimiento);
 };
 
-#endif

@@ -1,69 +1,106 @@
+#include <limits>
 #include "MainMenu.h"
+#include "MenuUtils.h"
 #include "PacienteMenu.h"
 #include "CitasMenu.h"
-// #include "CitasMenu.cpp"
-// #include "CitaMenu.h"  // para cuando agreguemos nuevos submodulos
-// #include "MedicamentoMenu.h"
-#include <limits>
+// #include "MedicamentoMenu.h" // para cuando agreguemos nuevos submodulos
 
-MainMenu::MainMenu( PacienteMenu* pacienteMenu,
-                    CitasMenu* citasMenu){
+MainMenu::MainMenu(PacienteMenu* pacienteMenu, CitasMenu* citasMenu) {
     this->pacienteMenu = std::unique_ptr<PacienteMenu>(pacienteMenu);
     this->citasMenu = std::unique_ptr<CitasMenu>(citasMenu);
-    // inicializar otros menus cuando existan:
-    // this->medicamentoMenu = std::unique_ptr<MedicamentoMenu>(medicamentoMenu);
 }
 
 void MainMenu::ejecutar() {
-
+    
     int opcion;
     do {
         mostrarMenuPrincipal();
-        std::cin >> opcion;
-        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        opcion = MenuUtils::leerOpcion(0, 2);
 
         switch(opcion) {
             case 1:
-                limpiarPantalla();
-                pacienteMenu -> ejecutar();
+                MenuUtils::limpiarPantalla();
+                MenuUtils::mostrarCargando("Cargando módulo de pacientes");
+                pacienteMenu->ejecutar();
                 break;
             case 2:
-                limpiarPantalla();
-                citasMenu -> ejecutar();
+                MenuUtils::limpiarPantalla();
+                MenuUtils::mostrarCargando("Cargando módulo de citas");
+                citasMenu->ejecutar();
                 break;
-            /*
-            //ejemplo de como agregar un nuevo submodulo:
-            case 3:
-                limpiarPantalla();
-                medicamentoMenu->ejecutar();
-                break;
-            */
             case 0:
-                std::cout << "Saliendo del sistema..." << std::endl;
+                mostrarSalida();
                 break;
-            default:
-                std::cout << "Opción no válida. Intente de nuevo." << std::endl;
         }
     } while(opcion != 0);
 }
 
 void MainMenu::mostrarMenuPrincipal() {
-    limpiarPantalla();
-    std::cout << "\n=================================" << std::endl;
-    std::cout << "\n=== SISTEMA DE GESTION DENTAL ===" << std::endl;
-    std::cout << "\n===      RATONCITO PEREZ      ===" << std::endl;
-    std::cout << "\n=================================" << std::endl;
+    MenuUtils::limpiarPantalla();
+    
+    // logo/banner principal
+    mostrarBanner();
+    
+    // titulo principal
+    MenuUtils::mostrarTitulo("SISTEMA DE GESTIÓN DENTAL", MenuUtils::AZUL, MenuUtils::BLANCO);
+    MenuUtils::mostrarSubtitulo("RATONCITO PÉREZ", MenuUtils::CYAN);
+    
+    std::cout << "\n";
+    
+    // opciones del menu
+    MenuUtils::mostrarOpcion(1, "Gestión de Pacientes");
+    MenuUtils::mostrarOpcion(2, "Gestión de Citas");
+    // MenuUtils::mostrarOpcion(3, "Gestión de Medicamentos", false); // ejemplo para agregar nueva opcion
+    
+    MenuUtils::mostrarSeparador('-', 30, MenuUtils::GRIS);
+    MenuUtils::mostrarOpcion(0, "Salir del Sistema");
+    
+    std::cout << "\n";
+}
 
-    std::cout << "1. Gestión de Pacientes" << std::endl;
-    std::cout << "2. Gestión de Citas" << std::endl;
-    // std::cout << "3. Gestión de Medicamentos" << std::endl;      // Para nuevos módulos
-    // std::cout << "4. Gestión de Nombre_Modulo" << std::endl;      // Para nuevos módulos
-    std::cout << "0. Salir" << std::endl;
-    std::cout << "Seleccione una opción: ";
+void MainMenu::mostrarBanner() {
+    std::vector<std::string> banner = {
+        "   +======================================+",
+        "   |                                      |",
+        "   |          SISTEMA DE GESTIÓN          |",
+        "   |                                      |",
+        "   |          RATONCITO PEREZ             |",
+        "   |                                      |",
+        "   +======================================+"
+    };
+    
+    MenuUtils::cambiarColor(MenuUtils::NEGRO, MenuUtils::CYAN);
+    for (const auto& linea : banner) {
+        MenuUtils::centrarTexto(linea);
+    }
+    MenuUtils::restaurarColor();
+}
+
+void MainMenu::mostrarSalida() {
+    MenuUtils::limpiarPantalla();
+    
+    std::vector<std::string> despedida = {
+        "",
+        "Gracias por usar nuestro sistema!",
+        "",
+        "Sistema de Gestion Dental",
+        "Ratoncito Perez",
+        "",
+        "Version 1.0 - 2025",
+        ""
+    };
+    
+    MenuUtils::mostrarCuadro(despedida, MenuUtils::VERDE);
+    
+    MenuUtils::mostrarMensaje("\nSaliendo del sistema", MenuUtils::AMARILLO);
+    MenuUtils::mostrarCargando("Cerrando");
+    
+    std::cout << "\n";
+    MenuUtils::pausar();
+    MenuUtils::limpiarPantalla();
 }
 
 void MainMenu::limpiarPantalla() {
-    // Sistema portable para limpiar pantalla
     #ifdef _WIN32
         system("cls");
     #else

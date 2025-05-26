@@ -1,36 +1,45 @@
 #include <memory>
 #include <windows.h>
 
-#include "menu/MainMenu.h"
-#include "menu/PacienteMenu.h"
-#include "menu/CitasMenu.h"
-#include "servicios/PacienteServicio.h"
-#include "utils/constantes.h"
+#include "MainMenu.h"
+#include "PacienteMenu.h"
+#include "CitasMenu.h"
+#include "PacienteServicio.h"
+#include "MenuUtils.h"
+#include "constantes.h"
 
 int main() {
-    SetConsoleOutputCP(CP_UTF8);
-    SetConsoleCP(CP_UTF8);
-
-    // 1. crear los servicios
-    PacienteServicio pacienteServicio("pacientes.dat");
     
-    // 2. crear los menus con sus respectivos servicios
-    PacienteMenu pacienteMenu(pacienteServicio);
-    CitasMenu citasMenu;
+    MenuUtils::configurarConsola();
     
-    // 3. crear el menu principal e inyectar los submodulos
-    MainMenu mainMenu(&pacienteMenu, &citasMenu);
+    try {
+        // 1. crear los servicios
+        PacienteServicio pacienteServicio("pacientes.dat");
+        
+        // 2. crear los menus con sus respectivos servicios
+        PacienteMenu pacienteMenu(pacienteServicio);
+        CitasMenu citasMenu;
+        
+        // 3. crear el menu principal e inyectar los submodulos
+        MainMenu mainMenu(&pacienteMenu, &citasMenu);
+        
+        // 4. ejecutar el menu principal (SIN configurar consola nuevamente)
+        mainMenu.limpiarPantalla();
+        mainMenu.ejecutar();
+        
+    } catch (const std::exception& e) {
+        MenuUtils::mostrarMensajeError("Error crítico en el sistema: " + std::string(e.what()));
+        MenuUtils::pausar();
+    }
     
-    // 4. ejecutar el menu hprincipal
-    
-   mainMenu.limpiarPantalla();
-   mainMenu.ejecutar();
+    // restaurar config original antes de salir
+    MenuUtils::restaurarColor();
     
     return 0;
 }
 
 /*
-como agregar un nuevo submodulo en el futuro:
+como agregar un nuevo submodulo con modelo/servicio/menu:
 1. Crear el servicio correspondiente (ej: CitaService)
 2. Crear el menu correspondiente (ej: CitaMenu)
 3. modificar el main para:
