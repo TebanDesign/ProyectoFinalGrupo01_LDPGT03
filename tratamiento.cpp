@@ -1,105 +1,190 @@
-// Descripción: Implementación de funciones para gestionar tratamientos
+// Descripción: Implementación de la clase Tratamiento con herencia de Registro
 
-#include "tratamiento.h"
-#include "inventario.h"
-#include "encriptador.h"
-#include "paciente.h"
+#include "Tratamiento.h"
 #include <iostream>
 #include <fstream>
 #include <limits>
-
-// cambio en esta linea de codigo
+#include <vector>
 
 using namespace std;
 
-void registrarTratamiento() {
-    Tratamiento t;
+Tratamiento::Tratamiento(string dui, string med, string dos, string frec,
+                         string dur, string obs, string est)
+    : duiPaciente(dui), medicamento(med), dosis(dos), frecuencia(frec),
+      duracion(dur), observaciones(obs), estado(est) {}
+
+void Tratamiento::registrar() {
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
     cout << "\n=== Registrar Tratamiento ===\n";
-    do {
-        cout << "DUI del paciente: ";
-        getline(cin, t.duiPaciente);
-        if (!existeId(t.duiPaciente)) {
-            cout << "Paciente no encontrado. Intente con un DUI válido.\n";
-        }
-    } while (!existeId(t.duiPaciente));
+    cout << "DUI del paciente: "; getline(cin, duiPaciente);
+    cout << "Medicamento: "; getline(cin, medicamento);
+    cout << "Dosis: "; getline(cin, dosis);
+    cout << "Frecuencia: "; getline(cin, frecuencia);
+    cout << "Duración: "; getline(cin, duracion);
+    cout << "Observaciones: "; getline(cin, observaciones);
+    cout << "Estado: "; getline(cin, estado);
 
-    cout << "Medicamento: ";
-    getline(cin, t.medicamento);
-    cout << "Dosis (ej: 2): ";
-    getline(cin, t.dosis);
-    cout << "Período: ";
-    getline(cin, t.periodo);
-
-    // Descontar medicamento del inventario
-    int cantidadADescontar = stoi(t.dosis); // suponiendo que la dosis es un número
-    cout << "[Depuración] Intentando descontar " << cantidadADescontar << " del medicamento '" << t.medicamento << "'...\n";
-    if (!descontarMedicamento(t.medicamento, cantidadADescontar)) {
-        cout << "Error: El medicamento no fue encontrado o no hay suficiente stock.\n";
-    } else {
-        cout << "[Depuración] Medicamento actualizado correctamente en inventario.\n";
-    }
-
-    ofstream archivo("tratamientos.dat", ios::binary | ios::app);
+    ofstream archivo("./output/tratamientos.dat", ios::binary | ios::app);
     if (archivo.is_open()) {
-        string dosisCifrada = encriptar(t.dosis);
+        auto writeStr = [&](const string& str) {
+            size_t len = str.size();
+            archivo.write((char*)&len, sizeof(size_t));
+            archivo.write(str.c_str(), len);
+        };
 
-        size_t lenDui = t.duiPaciente.size();
-        size_t lenMedicamento = t.medicamento.size();
-        size_t lenDosis = dosisCifrada.size();
-        size_t lenPeriodo = t.periodo.size();
-
-        archivo.write((char*)&lenDui, sizeof(size_t));
-        archivo.write(t.duiPaciente.c_str(), lenDui);
-        archivo.write((char*)&lenMedicamento, sizeof(size_t));
-        archivo.write(t.medicamento.c_str(), lenMedicamento);
-        archivo.write((char*)&lenDosis, sizeof(size_t));
-        archivo.write(dosisCifrada.c_str(), lenDosis);
-        archivo.write((char*)&lenPeriodo, sizeof(size_t));
-        archivo.write(t.periodo.c_str(), lenPeriodo);
+        writeStr(duiPaciente);
+        writeStr(medicamento);
+        writeStr(dosis);
+        writeStr(frecuencia);
+        writeStr(duracion);
+        writeStr(observaciones);
+        writeStr(estado);
 
         archivo.close();
-        cout << "Tratamiento registrado exitosamente.\n";
-    } else {
-        cerr << "Error al abrir el archivo de tratamientos.\n";
+        cout << "Tratamiento registrado correctamente.\n";
     }
 }
 
-void mostrarTratamientos() {
-    ifstream archivo("tratamientos.dat", ios::binary);
+void Tratamiento::mostrar() const {
+    cout << "\nDUI: " << duiPaciente
+         << "\nMedicamento: " << medicamento
+         << "\nDosis: " << dosis
+         << "\nFrecuencia: " << frecuencia
+         << "\nDuración: " << duracion
+         << "\nObservaciones: " << observaciones
+         << "\nEstado: " << estado << "\n----------------------\n";
+}
+
+void Tratamiento::editar() {
+    string input;
+    cout << "\n=== Editar Tratamiento ===\n";
+    cout << "Nueva dosis (actual: " << dosis << "): "; getline(cin, input); if (!input.empty()) dosis = input;
+    cout << "Nueva frecuencia (actual: " << frecuencia << "): "; getline(cin, input); if (!input.empty()) frecuencia = input;
+    cout << "Nueva duración (actual: " << duracion << "): "; getline(cin, input); if (!input.empty()) duracion = input;
+    cout << "Nuevas observaciones: "; getline(cin, input); if (!input.empty()) observaciones = input;
+    cout << "Nuevo estado: "; getline(cin, input); if (!input.empty()) estado = input;
+}
+
+void Tratamiento::eliminar() {
+    estado = "Eliminado";
+}
+
+bool Tratamiento::coincideCon(const string& dui, const string& med) const {
+    return duiPaciente == dui && medicamento == med;
+}
+
+string Tratamiento::getDUI() const { return duiPaciente; }
+string Tratamiento::getMedicamento() const { return medicamento; }
+string Tratamiento::getEstado() const { return estado; }
+string Tratamiento::getDosis() const { return dosis; }
+string Tratamiento::getFrecuencia() const { return frecuencia; }
+string Tratamiento::getDuracion() const { return duracion; }
+string Tratamiento::getObservaciones() const { return observaciones; }
+
+// ================= FUNCIONES COMPLEMENTARIAS ===================
+
+void editarTratamientoEnArchivo(const string& dui, const string& med) {
+    vector<Tratamiento> lista = cargarTratamientosDesdeArchivo();
+    bool encontrado = false;
+    ofstream archivo("./output/tratamientos.dat", ios::binary | ios::trunc);
     if (!archivo.is_open()) {
-        cerr << "No se pudo abrir el archivo de tratamientos.\n";
+        cerr << "No se pudo abrir el archivo para editar.";
         return;
     }
-
-    cout << "\n=== Lista de Tratamientos ===\n";
-    while (archivo.peek() != EOF) {
-        size_t lenDui, lenMedicamento, lenDosis, lenPeriodo;
-        archivo.read((char*)&lenDui, sizeof(size_t));
-        if (archivo.eof()) break;
-        string dui(lenDui, ' ');
-        archivo.read(&dui[0], lenDui);
-
-        archivo.read((char*)&lenMedicamento, sizeof(size_t));
-        string medicamento(lenMedicamento, ' ');
-        archivo.read(&medicamento[0], lenMedicamento);
-
-        archivo.read((char*)&lenDosis, sizeof(size_t));
-        string dosis(lenDosis, ' ');
-        archivo.read(&dosis[0], lenDosis);
-
-        archivo.read((char*)&lenPeriodo, sizeof(size_t));
-        string periodo(lenPeriodo, ' ');
-        archivo.read(&periodo[0], lenPeriodo);
-
-        cout << "Paciente DUI: " << dui
-             << "\nMedicamento: " << medicamento
-             << "\nDosis: " << desencriptar(dosis)
-             << "\nPeríodo: " << periodo
-             << "\n----------------------\n";
+    for (auto& t : lista) {
+        if (t.coincideCon(dui, med)) {
+            encontrado = true;
+            t.editar();
+        }
+    }
+    for (const auto& t : lista) {
+        auto writeStr = [&](const string& str) {
+            size_t len = str.size();
+            archivo.write((char*)&len, sizeof(size_t));
+            archivo.write(str.c_str(), len);
+        };
+        writeStr(t.getDUI());
+        writeStr(t.getMedicamento());
+        writeStr(t.getDosis());
+        writeStr(t.getFrecuencia());
+        writeStr(t.getDuracion());
+        writeStr(t.getObservaciones());
+        writeStr(t.getEstado());
     }
     archivo.close();
+    if (encontrado) cout << "Tratamiento editado exitosamente.";
+    else cout << "Tratamiento no encontrado.";
 }
 
-void editarTratamiento() {
-    cout << "\nFuncionalidad de edición de tratamientos pendiente de implementación.\n";
+void eliminarTratamientoEnArchivo(const string& dui, const string& med) {
+    vector<Tratamiento> lista = cargarTratamientosDesdeArchivo();
+    bool encontrado = false;
+    ofstream archivo("./output/tratamientos.dat", ios::binary | ios::trunc);
+    if (!archivo.is_open()) {
+        cerr << "No se pudo abrir el archivo para eliminar.";
+        return;
+    }
+    for (auto& t : lista) {
+        if (t.coincideCon(dui, med)) {
+            encontrado = true;
+            t.eliminar();
+        }
+    }
+    for (const auto& t : lista) {
+        auto writeStr = [&](const string& str) {
+            size_t len = str.size();
+            archivo.write((char*)&len, sizeof(size_t));
+            archivo.write(str.c_str(), len);
+        };
+        writeStr(t.getDUI());
+        writeStr(t.getMedicamento());
+        writeStr(t.getDosis());
+        writeStr(t.getFrecuencia());
+        writeStr(t.getDuracion());
+        writeStr(t.getObservaciones());
+        writeStr(t.getEstado());
+    }
+    archivo.close();
+    if (encontrado) cout << "Tratamiento marcado como eliminado.";
+    else cout << "Tratamiento no encontrado.";
+}
+
+vector<Tratamiento> cargarTratamientosDesdeArchivo() {
+    ifstream archivo("./output/tratamientos.dat", ios::binary);
+    vector<Tratamiento> lista;
+    if (!archivo.is_open()) return lista;
+
+    auto readStr = [&](string& str) {
+        size_t len;
+        archivo.read((char*)&len, sizeof(size_t));
+        str.resize(len);
+        archivo.read(&str[0], len);
+    };
+
+    while (archivo.peek() != EOF) {
+        string dui, med, dos, frec, dur, obs, est;
+        readStr(dui);
+        readStr(med);
+        readStr(dos);
+        readStr(frec);
+        readStr(dur);
+        readStr(obs);
+        readStr(est);
+        lista.emplace_back(dui, med, dos, frec, dur, obs, est);
+    }
+    archivo.close();
+    return lista;
+}
+
+void mostrarTratamientosPorDUI(const string& dui) {
+    vector<Tratamiento> lista = cargarTratamientosDesdeArchivo();
+    cout << "\n=== Tratamientos para paciente: " << dui << " ===\n";
+    if (lista.empty()) cout << "Tratamiento no encontrado.";
+    else {
+        for (const auto& t : lista) {
+            if (t.getDUI() == dui && t.getEstado() != "Eliminado") {
+                t.mostrar();
+            }
+        }
+    }
 }
