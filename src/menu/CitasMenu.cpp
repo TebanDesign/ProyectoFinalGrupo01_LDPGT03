@@ -3,7 +3,7 @@
 #include <iomanip>
 
 #include "CitasMenu.h"
-#include "modelos/cita.h"
+#include "cita.h"
 
 using namespace std;
 

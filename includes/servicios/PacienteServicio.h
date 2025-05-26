@@ -1,10 +1,11 @@
 #ifndef PACIENTE_SERVICE_H
 #define PACIENTE_SERVICE_H
 
-#include "Paciente.h"
 #include <vector>
 #include <string>
 #include <fstream>
+
+#include "Paciente.h"
 
 class PacienteServicio {
 private:

@@ -4,7 +4,7 @@
 #include <algorithm> 
 
 #include "PacienteMenu.h"
-#include "utils/Validaciones.h"
+#include "Validaciones.h"
 
 using namespace std;
 
@@ -63,7 +63,7 @@ void PacienteMenu::agregarPaciente() {
     cout << "Nombre completo: ";
     getline(cin, nombre);
 
-    cout << "DUI: (00000000-0)";
+    cout << "DUI (00000000-0): ";
     getline(cin, dui);
 
     bool esDuiValido = Validaciones::validarDUI(dui);
@@ -237,7 +237,7 @@ void PacienteMenu::listarPacientes() {
 
         cout << left << setw(30) << "NOMBRE" << setw(15) << "DUI" << setw(15) << "GENERO" 
              << setw(15) << "FECHA NAC." << setw(15) << "EDAD"  << "COMENTARIOS" << endl;
-        cout << string(80, '-') << endl;
+        cout << string(100, '-') << endl;
 
         for (const auto& paciente : pacientes) {
             cout << left << setw(30) << paciente.getNombre().substr(0, 27) + "..."

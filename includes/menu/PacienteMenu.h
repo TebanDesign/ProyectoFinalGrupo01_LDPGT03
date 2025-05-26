@@ -1,8 +1,8 @@
 #ifndef PACIENTE_MENU_H
 #define PACIENTE_MENU_H
 
-#include "servicios/PacienteServicio.h"
 #include <iostream>
+#include "PacienteServicio.h"
 
 class PacienteMenu {
 private:

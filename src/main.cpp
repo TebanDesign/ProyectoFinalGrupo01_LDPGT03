@@ -1,11 +1,11 @@
 #include <memory>
 #include <windows.h>
 
-#include "menu/MainMenu.h"
-#include "menu/PacienteMenu.h"
-#include "menu/CitasMenu.h"
-#include "servicios/PacienteServicio.h"
-#include "utils/constantes.h"
+#include "MainMenu.h"
+#include "PacienteMenu.h"
+#include "CitasMenu.h"
+#include "PacienteServicio.h"
+#include "constantes.h"
 
 int main() {
     SetConsoleOutputCP(CP_UTF8);

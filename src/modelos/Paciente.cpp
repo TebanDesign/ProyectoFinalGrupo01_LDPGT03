@@ -3,7 +3,7 @@
 #include <sstream>
 
 #include "Paciente.h"
-#include "utils/CalcularEdad.h"
+#include "CalcularEdad.h"
 
 
 // Constructor por defecto

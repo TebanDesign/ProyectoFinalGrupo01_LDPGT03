@@ -1,8 +1,8 @@
 // Descripción: Implementación de funciones para gestionar citas
 
 #include "cita.h"
-#include "utils/encriptador.h"
-#include "servicios/PacienteServicio.h"
+#include "encriptador.h"
+#include "PacienteServicio.h"
 #include <iostream>
 #include <fstream>
 #include <limits>
