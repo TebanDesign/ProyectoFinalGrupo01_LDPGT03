@@ -3,7 +3,7 @@
 #include <ctime>
 #include <stdexcept>
 
-#include "CalcularEdad.h"
+#include "utils/CalcularEdad.h"
 
 std::string CalcularEdad::CalcularAsignarEdad(std::string fechaNacimiento){
 

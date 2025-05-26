@@ -1,12 +1,14 @@
 #include <memory>
 #include <windows.h>
 
-#include "MainMenu.h"
-#include "PacienteMenu.h"
-#include "CitasMenu.h"
-#include "PacienteServicio.h"
-#include "MenuUtils.h"
-#include "constantes.h"
+#include "menu/MainMenu.h"
+#include "menu/PacienteMenu.h"
+#include "menu/CitasMenu.h"
+#include "menu/MenuUtils.h"
+
+#include "servicios/PacienteServicio.h"
+
+#include "utils/constantes.h"
 
 int main() {
     

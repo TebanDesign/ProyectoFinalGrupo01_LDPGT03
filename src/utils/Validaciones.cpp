@@ -1,7 +1,7 @@
 #include <sstream>
 #include <cctype> 
 
-#include "Validaciones.h"
+#include "utils/Validaciones.h"
 
 bool Validaciones::esBisiesto(int anio) {
     return (anio % 4 == 0 && anio % 100 != 0) || (anio % 400 == 0);

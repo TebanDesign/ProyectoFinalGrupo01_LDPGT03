@@ -1,8 +1,8 @@
 #include <limits>
-#include "MainMenu.h"
-#include "MenuUtils.h"
-#include "PacienteMenu.h"
-#include "CitasMenu.h"
+#include "menu/MainMenu.h"
+#include "menu/MenuUtils.h"
+#include "menu/PacienteMenu.h"
+#include "menu/CitasMenu.h"
 // #include "MedicamentoMenu.h" // para cuando agreguemos nuevos submodulos
 
 MainMenu::MainMenu(PacienteMenu* pacienteMenu, CitasMenu* citasMenu) {

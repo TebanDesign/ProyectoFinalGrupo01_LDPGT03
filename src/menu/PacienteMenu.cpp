@@ -3,9 +3,9 @@
 #include <iomanip>
 #include <algorithm>
 
-#include "PacienteMenu.h"
-#include "Validaciones.h"
-#include "MenuUtils.h"
+#include "menu/PacienteMenu.h"
+#include "menu/MenuUtils.h"
+#include "utils/Validaciones.h"
 
 using namespace std;
 

@@ -4,8 +4,8 @@
 #include <iomanip>
 #include <limits>
 
-#include "MenuUtils.h"
-#include "MainMenu.h"
+#include "menu/MenuUtils.h"
+#include "menu/MainMenu.h"
 
 // inicializacion de variables estaticas
 HANDLE MenuUtils::hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -55,9 +55,14 @@ void MenuUtils::configurarConsola() {
     DWORD inputMode;
     GetConsoleMode(hInput, &inputMode);
     
-    // habilitar modo de entrada extendido
+    // // habilitar modo de entrada extendido, no permite seleccionar y copiar
+    // inputMode |= ENABLE_EXTENDED_FLAGS;
+    // inputMode &= ~ENABLE_QUICK_EDIT_MODE; // deshabilitar QuickEdit que puede causar cuelgues
+    // inputMode |= ENABLE_INSERT_MODE;
+
+    // habilitar modo de entrada extendido, no permite seleccionar y copiar
     inputMode |= ENABLE_EXTENDED_FLAGS;
-    inputMode &= ~ENABLE_QUICK_EDIT_MODE; // deshabilitar QuickEdit que puede causar cuelgues
+    inputMode |= ENABLE_QUICK_EDIT_MODE; // deshabilitar QuickEdit que puede causar cuelgues
     inputMode |= ENABLE_INSERT_MODE;
     
     SetConsoleMode(hInput, inputMode);

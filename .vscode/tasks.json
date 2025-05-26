@@ -8,14 +8,20 @@
 			"args": [
 				"-fdiagnostics-color=always",
 				"-g",
+
+				// inclusion de archivos .h de los directorios
 				"-I",
-				"${workspaceFolder}/src",
+				"${workspaceFolder}/includes",
 				"-I",
-				"${workspaceFolder}/src/menu",
+				"${workspaceFolder}/includes/menu",
 				"-I",
-				"${workspaceFolder}/src/servicios",
+				"${workspaceFolder}/includes/servicios",
 				"-I",
-				"${workspaceFolder}/src/modelos",
+				"${workspaceFolder}/includes/modelos",
+				"-I",
+				"${workspaceFolder}/includes/modelos",
+
+				// inclusion de archivos .cpp de los directorios
 				"-I",
 				"${workspaceFolder}/src/utils",
 				"${workspaceFolder}/src/*.cpp",
@@ -23,6 +29,8 @@
 				"${workspaceFolder}/src/servicios/*.cpp",
 				"${workspaceFolder}/src/modelos/*.cpp",
 				"${workspaceFolder}/src/utils/*.cpp",
+
+				// configuracion donde guardar el ejecutable
 				"-o",
 				"${workspaceFolder}\\bin\\ClinicaDentalRP.exe"
 			],

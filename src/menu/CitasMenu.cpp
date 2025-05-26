@@ -2,7 +2,7 @@
 #include <limits>
 #include <iomanip>
 
-#include "CitasMenu.h"
+#include "menu/CitasMenu.h"
 #include "modelos/cita.h"
 
 using namespace std;
@@ -56,4 +56,3 @@ void CitasMenu::editarCita(){
 void CitasMenu::listarCitas(){
     mostrarCitas();
 }
-
