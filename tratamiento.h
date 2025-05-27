@@ -1,5 +1,3 @@
-// ======================= CLINICA DENTAL =========================
-// Archivo: Tratamiento.h
 // Descripción: Clase orientada a objetos para la gestión de tratamientos
 
 #ifndef TRATAMIENTO_H
