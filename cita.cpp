@@ -1,8 +1,8 @@
 // Descripción: Implementación de funciones para gestionar citas
 
 #include "cita.h"
-#include "utils/encriptador.h"
-#include "servicios/PacienteServicio.h"
+#include "encriptador.h"
+#include "paciente.h"
 #include <iostream>
 #include <fstream>
 #include <limits>
@@ -10,19 +10,15 @@
 using namespace std;
 
 void agendarCita() {
-    PacienteServicio pacienteServicio("pacientes.dat");
     Cita c;
-    // c.idPaciente => DUI paciente
-    bool existePaciente = pacienteServicio.buscarPorDui(c.idPaciente).getDui().empty();
-
     cout << "\n=== Agendar Cita ===\n";
     do {
         cout << "DUI del paciente: ";
         getline(cin, c.idPaciente);
-        if (existePaciente) {
+        if (!existeId(c.idPaciente)) {
             cout << "Paciente no encontrado. Intente con un DUI válido.\n";
         }
-    } while (existePaciente);
+    } while (!existeId(c.idPaciente));
 
     cout << "Fecha (dd/mm/aaaa): ";
     getline(cin, c.fecha);
