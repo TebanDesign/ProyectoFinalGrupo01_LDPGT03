@@ -1,0 +1,57 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "cppbuild",
+			"label": "Compilar_ClinicaDentalRP",
+			"command": "C:\\TDM-GCC-64\\bin\\g++.exe",
+			"args": [
+				"-fdiagnostics-color=always",
+				"-g",
+
+				// inclusion de archivos .h de los directorios
+				"-I",
+				"${workspaceFolder}/includes",
+				"-I",
+				"${workspaceFolder}/includes/menu",
+				"-I",
+				"${workspaceFolder}/includes/servicios",
+				"-I",
+				"${workspaceFolder}/includes/modelos",
+				"-I",
+				"${workspaceFolder}/includes/modelos",
+
+				// inclusion de archivos .cpp de los directorios
+				"-I",
+				"${workspaceFolder}/src/utils",
+				"${workspaceFolder}/src/*.cpp",
+				"${workspaceFolder}/src/menu/*.cpp",
+				"${workspaceFolder}/src/servicios/*.cpp",
+				"${workspaceFolder}/src/modelos/*.cpp",
+				"${workspaceFolder}/src/utils/*.cpp",
+
+				// configuracion donde guardar el ejecutable
+				"-o",
+				"${workspaceFolder}\\bin\\ClinicaDentalRP.exe"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"problemMatcher": [
+				"$gcc"
+			],
+			"group": "build",
+			"detail": "compiler: C:\\TDM-GCC-64\\bin\\g++.exe"
+		},
+		{
+			"label": "Compilar_Ejecutar_ClinicaDentalRP",
+			"command": "${workspaceFolder}\\bin\\ClinicaDentalRP.exe",
+			"dependsOn": "Compilar_ClinicaDentalRP",
+			"problemMatcher": [],
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			}
+		}
+	]
+}

@@ -2,8 +2,8 @@
 
 #include "tratamiento.h"
 #include "inventario.h"
-#include "encriptador.h"
-#include "paciente.h"
+#include "utils/encriptador.h"
+#include "servicios/PacienteServicio.h"
 #include <iostream>
 #include <fstream>
 #include <limits>
@@ -13,15 +13,19 @@
 using namespace std;
 
 void registrarTratamiento() {
+    PacienteServicio pacienteServicio("pacientes.dat");
     Tratamiento t;
+
+    bool existePaciente = pacienteServicio.buscarPorDui(t.duiPaciente).getDui().empty();
+
     cout << "\n=== Registrar Tratamiento ===\n";
     do {
         cout << "DUI del paciente: ";
         getline(cin, t.duiPaciente);
-        if (!existeId(t.duiPaciente)) {
+        if (!existePaciente) {
             cout << "Paciente no encontrado. Intente con un DUI válido.\n";
         }
-    } while (!existeId(t.duiPaciente));
+    } while (!existePaciente);
 
     cout << "Medicamento: ";
     getline(cin, t.medicamento);
