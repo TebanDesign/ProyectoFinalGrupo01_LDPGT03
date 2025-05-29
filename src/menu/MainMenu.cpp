@@ -3,11 +3,12 @@
 #include "menu/MenuUtils.h"
 #include "menu/PacienteMenu.h"
 #include "menu/CitasMenu.h"
-// #include "MedicamentoMenu.h" // para cuando agreguemos nuevos submodulos
+#include "menu/InventarioMenu.h"
 
-MainMenu::MainMenu(PacienteMenu* pacienteMenu, CitasMenu* citasMenu) {
+MainMenu::MainMenu(PacienteMenu* pacienteMenu, CitasMenu* citasMenu, InventarioMenu* inventarioMenu) {
     this->pacienteMenu = std::unique_ptr<PacienteMenu>(pacienteMenu);
     this->citasMenu = std::unique_ptr<CitasMenu>(citasMenu);
+    this->inventarioMenu = std::unique_ptr<InventarioMenu>(inventarioMenu);
 }
 
 void MainMenu::ejecutar() {
@@ -15,7 +16,7 @@ void MainMenu::ejecutar() {
     int opcion;
     do {
         mostrarMenuPrincipal();
-        opcion = MenuUtils::leerOpcion(0, 2);
+        opcion = MenuUtils::leerOpcion(0, 3);
 
         switch(opcion) {
             case 1:
@@ -27,6 +28,11 @@ void MainMenu::ejecutar() {
                 MenuUtils::limpiarPantalla();
                 MenuUtils::mostrarCargando("Cargando módulo de citas");
                 citasMenu->ejecutar();
+                break;
+            case 3:
+                MenuUtils::limpiarPantalla();
+                MenuUtils::mostrarCargando("Cargando módulo de inventario");
+                inventarioMenu->ejecutar();
                 break;
             case 0:
                 mostrarSalida();
@@ -50,7 +56,7 @@ void MainMenu::mostrarMenuPrincipal() {
     // opciones del menu
     MenuUtils::mostrarOpcion(1, "Gestión de Pacientes");
     MenuUtils::mostrarOpcion(2, "Gestión de Citas");
-    // MenuUtils::mostrarOpcion(3, "Gestión de Medicamentos", false); // ejemplo para agregar nueva opcion
+    MenuUtils::mostrarOpcion(3, "Gestión de Inventario");
     
     MenuUtils::mostrarSeparador('-', 30, MenuUtils::GRIS);
     MenuUtils::mostrarOpcion(0, "Salir del Sistema");

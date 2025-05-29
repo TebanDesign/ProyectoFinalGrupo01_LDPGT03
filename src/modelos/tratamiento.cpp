@@ -4,24 +4,33 @@
 #include "inventario.h"
 #include "utils/encriptador.h"
 #include "servicios/PacienteServicio.h"
+#include "servicios/InventarioServicio.h"  // Incluir el servicio
 #include <iostream>
 #include <fstream>
 #include <limits>
 
-// cambio en esta linea de codigo
-
 using namespace std;
 
-void registrarTratamiento() {
+// Función auxiliar para descontar medicamentos
+bool descontarMedicamento(InventarioServicio& inventarioServicio, 
+                          const string& medicamento, 
+                          int cantidad) {
+    return inventarioServicio.descontarMedicamento(medicamento, cantidad);
+}
+
+void registrarTratamiento(InventarioServicio& inventarioServicio) {
     PacienteServicio pacienteServicio("pacientes.dat");
     Tratamiento t;
 
-    bool existePaciente = pacienteServicio.buscarPorDui(t.duiPaciente).getDui().empty();
-
     cout << "\n=== Registrar Tratamiento ===\n";
+    bool existePaciente = false;
     do {
         cout << "DUI del paciente: ";
         getline(cin, t.duiPaciente);
+        
+        // Verificar si el paciente existe
+        existePaciente = !pacienteServicio.buscarPorDui(t.duiPaciente).getDui().empty();
+        
         if (!existePaciente) {
             cout << "Paciente no encontrado. Intente con un DUI válido.\n";
         }
@@ -35,12 +44,23 @@ void registrarTratamiento() {
     getline(cin, t.periodo);
 
     // Descontar medicamento del inventario
-    int cantidadADescontar = stoi(t.dosis); // suponiendo que la dosis es un número
-    cout << "[Depuración] Intentando descontar " << cantidadADescontar << " del medicamento '" << t.medicamento << "'...\n";
-    if (!descontarMedicamento(t.medicamento, cantidadADescontar)) {
-        cout << "Error: El medicamento no fue encontrado o no hay suficiente stock.\n";
-    } else {
-        cout << "[Depuración] Medicamento actualizado correctamente en inventario.\n";
+    try {
+        int cantidadADescontar = stoi(t.dosis);
+        cout << "[Depuración] Intentando descontar " << cantidadADescontar 
+             << " del medicamento '" << t.medicamento << "'...\n";
+        
+        if (!descontarMedicamento(inventarioServicio, t.medicamento, cantidadADescontar)) {
+            cout << "Error: El medicamento no fue encontrado o no hay suficiente stock.\n";
+            return;  // Salir si no se puede descontar
+        } else {
+            cout << "[Depuración] Medicamento actualizado correctamente en inventario.\n";
+        }
+    } catch (const invalid_argument& e) {
+        cerr << "Error: La dosis debe ser un número válido.\n";
+        return;
+    } catch (const out_of_range& e) {
+        cerr << "Error: El valor de dosis es demasiado grande.\n";
+        return;
     }
 
     ofstream archivo("tratamientos.dat", ios::binary | ios::app);
@@ -54,10 +74,13 @@ void registrarTratamiento() {
 
         archivo.write((char*)&lenDui, sizeof(size_t));
         archivo.write(t.duiPaciente.c_str(), lenDui);
+        
         archivo.write((char*)&lenMedicamento, sizeof(size_t));
         archivo.write(t.medicamento.c_str(), lenMedicamento);
+        
         archivo.write((char*)&lenDosis, sizeof(size_t));
         archivo.write(dosisCifrada.c_str(), lenDosis);
+        
         archivo.write((char*)&lenPeriodo, sizeof(size_t));
         archivo.write(t.periodo.c_str(), lenPeriodo);
 
@@ -78,6 +101,7 @@ void mostrarTratamientos() {
     cout << "\n=== Lista de Tratamientos ===\n";
     while (archivo.peek() != EOF) {
         size_t lenDui, lenMedicamento, lenDosis, lenPeriodo;
+        
         archivo.read((char*)&lenDui, sizeof(size_t));
         if (archivo.eof()) break;
         string dui(lenDui, ' ');
