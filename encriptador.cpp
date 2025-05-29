@@ -1,6 +1,6 @@
 // Descripción: Implementación de funciones de encriptamiento simple
 
-#include "utils/encriptador.h"
+#include "encriptador.h"
 
 std::string encriptar(const std::string& texto, int clave) {
     std::string resultado = texto;
