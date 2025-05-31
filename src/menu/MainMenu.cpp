@@ -17,7 +17,7 @@ void MainMenu::ejecutar() {
     int opcion;
     do {
         mostrarMenuPrincipal();
-        opcion = MenuUtils::leerOpcion(0, 2);
+        opcion = MenuUtils::leerOpcion(0, 3);
 
         switch(opcion) {
             case 1:
@@ -57,6 +57,7 @@ void MainMenu::mostrarMenuPrincipal() {
     // opciones del menu
     MenuUtils::mostrarOpcion(1, "Gestión de Pacientes");
     MenuUtils::mostrarOpcion(2, "Gestión de Citas");
+    MenuUtils::mostrarOpcion(3, "Gestión de Tratamientos");
     // MenuUtils::mostrarOpcion(3, "Gestión de Medicamentos", false); // ejemplo para agregar nueva opcion
     
     MenuUtils::mostrarSeparador('-', 30, MenuUtils::GRIS);
