@@ -1,134 +1,148 @@
-// Descripción: Implementación de funciones para gestión de medicamentos
-
-#include "inventario.h"
-#include "tratamiento.h"
+#include "modelos/Inventario.h"
+#include "utils/Validaciones.h"
 #include <iostream>
-#include <fstream>
-#include <vector>
-#include <limits>
+#include <iomanip>
+#include <ctime>
+#include <algorithm>
 
-using namespace std;
+// =================== Clase Lote ===================
 
-void agregarMedicamento() {
-    Medicamento m;
-    cout << "\n=== Agregar Medicamento ===\n";
-    cout << "Nombre: ";
-    getline(cin, m.nombre);
-    cout << "Cantidad: ";
-    cin >> m.cantidad;
-    cout << "Precio: ";
-    cin >> m.precio;
-    cin.ignore();
+Lote::Lote() : cantidad(0), precioUnitario(0.0) {}
 
-    ofstream archivo("medicamentos.dat", ios::binary | ios::app);
-    if (archivo.is_open()) {
-        size_t lenNombre = m.nombre.size();
-        archivo.write((char*)&lenNombre, sizeof(size_t));
-        archivo.write(m.nombre.c_str(), lenNombre);
-        archivo.write((char*)&m.cantidad, sizeof(int));
-        archivo.write((char*)&m.precio, sizeof(float));
-        archivo.close();
-        cout << "Medicamento agregado exitosamente.\n";
-    } else {
-        cerr << "Error al abrir el archivo de inventario.\n";
-    }
+Lote::Lote(int cantidad, const std::string& fechaVencimiento, 
+           float precioUnitario, const std::string& fechaIngreso,
+           const std::string& numeroLote)
+    : cantidad(cantidad), fechaVencimiento(fechaVencimiento),
+      precioUnitario(precioUnitario), fechaIngreso(fechaIngreso),
+      numeroLote(numeroLote) {}
+
+int Lote::getCantidad() const { return cantidad; }
+std::string Lote::getFechaVencimiento() const { return fechaVencimiento; }
+std::string Lote::getFechaIngreso() const { return fechaIngreso; }
+float Lote::getPrecioUnitario() const { return precioUnitario; }
+std::string Lote::getNumeroLote() const { return numeroLote; }
+
+void Lote::setCantidad(int cantidad) { this->cantidad = cantidad; }
+void Lote::setFechaVencimiento(const std::string& fecha) { this->fechaVencimiento = fecha; }
+void Lote::setFechaIngreso(const std::string& fecha) { this->fechaIngreso = fecha; }
+void Lote::setPrecioUnitario(float precio) { this->precioUnitario = precio; }
+void Lote::setNumeroLote(const std::string& lote) { this->numeroLote = lote; }
+
+bool Lote::estaVencido() const {
+    if (fechaVencimiento.empty()) return false;
+    return Validaciones::estaVencido(fechaVencimiento);
 }
 
-void mostrarInventario() {
-    ifstream archivo("medicamentos.dat", ios::binary);
-    if (!archivo.is_open()) {
-        cerr << "No se pudo abrir el archivo de inventario.\n";
-        return;
-    }
+// =================== Clase Inventario ===================
 
-    cout << "\n=== Inventario de Medicamentos ===\n";
-    while (archivo.peek() != EOF) {
-        size_t lenNombre;
-        archivo.read((char*)&lenNombre, sizeof(size_t));
-        if (archivo.eof()) break;
-        string nombre(lenNombre, ' ');
-        archivo.read(&nombre[0], lenNombre);
+Inventario::Inventario() : nombre(""), codigo(""), unidad(""), presentacion("") {}
 
-        int cantidad;
-        float precio;
-        archivo.read((char*)&cantidad, sizeof(int));
-        archivo.read((char*)&precio, sizeof(float));
+Inventario::Inventario(const std::string& nombre, const std::string& codigo, 
+                       const std::string& unidad, const std::string& presentacion)
+    : nombre(nombre), codigo(codigo), unidad(unidad), presentacion(presentacion) {}
 
-        cout << "Nombre: " << nombre
-             << "\nCantidad: " << cantidad
-             << "\nPrecio: $" << precio
-             << "\n----------------------\n";
-    }
-    archivo.close();
+std::string Inventario::getNombre() const { return nombre; }
+std::string Inventario::getCodigo() const { return codigo; }
+std::string Inventario::getUnidad() const { return unidad; }
+std::string Inventario::getPresentacion() const { return presentacion; }
+std::vector<Lote>& Inventario::getLotes() { return lotes; }
+const std::vector<Lote>& Inventario::getLotes() const { return lotes; }
+
+void Inventario::setNombre(const std::string& nombre) { this->nombre = nombre; }
+void Inventario::setCodigo(const std::string& codigo) { this->codigo = codigo; }
+void Inventario::setUnidad(const std::string& unidad) { this->unidad = unidad; }
+void Inventario::setPresentacion(const std::string& presentacion) { this->presentacion = presentacion; }
+
+void Inventario::agregarLote(const Lote& lote) {
+    lotes.push_back(lote);
 }
 
-void editarMedicamento() {
-    cout << "\nFuncionalidad de edición de medicamentos pendiente de implementación.\n";
+int Inventario::getStockTotal() const {
+    int total = 0;
+    for (const auto& lote : lotes) {
+        total += lote.getCantidad();
+    }
+    return total;
 }
 
-bool buscarMedicamento(const string& nombreBuscado, Medicamento& encontrado) {
-    ifstream archivo("medicamentos.dat", ios::binary);
-    if (!archivo.is_open()) return false;
-
-    while (archivo.peek() != EOF) {
-        size_t lenNombre;
-        archivo.read((char*)&lenNombre, sizeof(size_t));
-        if (archivo.eof()) break;
-        string nombre(lenNombre, ' ');
-        archivo.read(&nombre[0], lenNombre);
-
-        archivo.read((char*)&encontrado.cantidad, sizeof(int));
-        archivo.read((char*)&encontrado.precio, sizeof(float));
-
-        if (nombre == nombreBuscado) {
-            encontrado.nombre = nombre;
-            archivo.close();
-            return true;
+Lote* Inventario::buscarLotePorNumero(const std::string& numeroLote) {
+    for (auto& lote : lotes) {
+        if (lote.getNumeroLote() == numeroLote) {
+            return &lote;
         }
     }
-    archivo.close();
+    return nullptr;
+}
+
+bool Inventario::descontarDeLote(const std::string& numeroLote, int cantidad) {
+    Lote* lote = buscarLotePorNumero(numeroLote);
+    if (!lote) return false;
+    
+    if (lote->getCantidad() >= cantidad) {
+        lote->setCantidad(lote->getCantidad() - cantidad);
+        return true;
+    }
     return false;
 }
 
-bool descontarMedicamento(const string& nombreBuscado, int cantidadSolicitada) {
-    ifstream archivoLectura("medicamentos.dat", ios::binary);
-    ofstream archivoTemporal("temp.dat", ios::binary);
-    bool encontrado = false;
-
-    if (!archivoLectura.is_open() || !archivoTemporal.is_open()) return false;
-
-    while (archivoLectura.peek() != EOF) {
-        size_t lenNombre;
-        archivoLectura.read((char*)&lenNombre, sizeof(size_t));
-        if (archivoLectura.eof()) break;
-        string nombre(lenNombre, ' ');
-        archivoLectura.read(&nombre[0], lenNombre);
-
-        int cantidad;
-        float precio;
-        archivoLectura.read((char*)&cantidad, sizeof(int));
-        archivoLectura.read((char*)&precio, sizeof(float));
-
-        if (nombre == nombreBuscado) {
-            encontrado = true;
-            if (cantidad >= cantidadSolicitada) {
-                cantidad -= cantidadSolicitada;
-            } else {
-                cout << "\nAdvertencia: no hay suficiente stock de " << nombre << ".\n";
-            }
+bool Inventario::descontarPEPS(int cantidad) {
+    // Ordenar por fecha de ingreso (más antiguos primero)
+    std::sort(lotes.begin(), lotes.end(), [](const Lote& a, const Lote& b) {
+        return Validaciones::compararFechas(a.getFechaIngreso(), b.getFechaIngreso()) < 0;
+    });
+    
+    int cantidadRestante = cantidad;
+    for (auto& lote : lotes) {
+        if (cantidadRestante <= 0) break;
+        
+        int disponible = lote.getCantidad();
+        if (disponible > 0) {
+            int aDescontar = std::min(cantidadRestante, disponible);
+            lote.setCantidad(disponible - aDescontar);
+            cantidadRestante -= aDescontar;
         }
-
-        archivoTemporal.write((char*)&lenNombre, sizeof(size_t));
-        archivoTemporal.write(nombre.c_str(), lenNombre);
-        archivoTemporal.write((char*)&cantidad, sizeof(int));
-        archivoTemporal.write((char*)&precio, sizeof(float));
     }
+    
+    return cantidadRestante == 0;
+}
 
-    archivoLectura.close();
-    archivoTemporal.close();
+bool Inventario::descontarUEPS(int cantidad) {
+    // Ordenar por fecha de ingreso (más recientes primero)
+    std::sort(lotes.begin(), lotes.end(), [](const Lote& a, const Lote& b) {
+        return Validaciones::compararFechas(a.getFechaIngreso(), b.getFechaIngreso()) > 0;
+    });
+    
+    int cantidadRestante = cantidad;
+    for (auto& lote : lotes) {
+        if (cantidadRestante <= 0) break;
+        
+        int disponible = lote.getCantidad();
+        if (disponible > 0) {
+            int aDescontar = std::min(cantidadRestante, disponible);
+            lote.setCantidad(disponible - aDescontar);
+            cantidadRestante -= aDescontar;
+        }
+    }
+    
+    return cantidadRestante == 0;
+}
 
-    remove("medicamentos.dat");
-    rename("temp.dat", "medicamentos.dat");
+void Inventario::mostrarLotes() const {
+    std::cout << "\nLotes para: " << nombre << " (" << codigo << ")\n";
+    std::cout << std::left << std::setw(10) << "Lote"
+              << std::setw(10) << "Cantidad"
+              << std::setw(15) << "Precio"
+              << std::setw(15) << "Ingreso"
+              << std::setw(15) << "Vencimiento"
+              << std::setw(10) << "Vencido" << "\n";
+    std::cout << std::string(75, '-') << "\n";
 
-    return encontrado;
+    for (const auto& lote : lotes) {
+        std::cout << std::left << std::setw(10) << lote.getNumeroLote()
+                  << std::setw(10) << lote.getCantidad()
+                  << std::setw(15) << std::fixed << std::setprecision(2) << lote.getPrecioUnitario()
+                  << std::setw(15) << lote.getFechaIngreso()
+                  << std::setw(15) << lote.getFechaVencimiento()
+                  << std::setw(10) << (lote.estaVencido() ? "Sí" : "No") << "\n";
+    }
 }

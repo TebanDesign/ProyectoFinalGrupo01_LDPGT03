@@ -1,6 +1,6 @@
 #include <sstream>
 #include <cctype> 
-
+#include <ctime>
 #include "utils/Validaciones.h"
 
 bool Validaciones::esBisiesto(int anio) {
