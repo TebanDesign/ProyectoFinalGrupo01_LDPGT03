@@ -4,6 +4,7 @@
 #include "menu/MainMenu.h"
 #include "menu/PacienteMenu.h"
 #include "menu/CitasMenu.h"
+#include "menu/TratamientoMenu.h"
 #include "menu/MenuUtils.h"
 
 #include "servicios/PacienteServicio.h"
@@ -21,9 +22,12 @@ int main() {
         // 2. crear los menus con sus respectivos servicios
         PacienteMenu pacienteMenu(pacienteServicio);
         CitasMenu citasMenu;
+
+        TratamientoMenu tratamientoMenu;
         
         // 3. crear el menu principal e inyectar los submodulos
-        MainMenu mainMenu(&pacienteMenu, &citasMenu);
+        MainMenu mainMenu(&pacienteMenu, &citasMenu, &tratamientoMenu);
+
         
         // 4. ejecutar el menu principal (SIN configurar consola nuevamente)
         mainMenu.limpiarPantalla();

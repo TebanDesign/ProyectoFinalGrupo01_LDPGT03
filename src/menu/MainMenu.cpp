@@ -3,11 +3,13 @@
 #include "menu/MenuUtils.h"
 #include "menu/PacienteMenu.h"
 #include "menu/CitasMenu.h"
+#include "menu/TratamientoMenu.h"
 // #include "MedicamentoMenu.h" // para cuando agreguemos nuevos submodulos
 
-MainMenu::MainMenu(PacienteMenu* pacienteMenu, CitasMenu* citasMenu) {
+MainMenu::MainMenu(PacienteMenu* pacienteMenu, CitasMenu* citasMenu, TratamientoMenu* tratamientoMenu) {
     this->pacienteMenu = std::unique_ptr<PacienteMenu>(pacienteMenu);
     this->citasMenu = std::unique_ptr<CitasMenu>(citasMenu);
+    this->tratamientoMenu = std::unique_ptr<TratamientoMenu>(tratamientoMenu);
 }
 
 void MainMenu::ejecutar() {
@@ -27,6 +29,11 @@ void MainMenu::ejecutar() {
                 MenuUtils::limpiarPantalla();
                 MenuUtils::mostrarCargando("Cargando módulo de citas");
                 citasMenu->ejecutar();
+                break;
+            case 3:
+                MenuUtils::limpiarPantalla();
+                MenuUtils::mostrarCargando("Cargando módulo de tratamientos");
+                tratamientoMenu->ejecutar();
                 break;
             case 0:
                 mostrarSalida();
