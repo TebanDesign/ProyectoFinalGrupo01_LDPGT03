@@ -1,91 +1,45 @@
-// Descripción: Implementación de funciones para gestionar citas
-
-#include "cita.h"
-#include "utils/encriptador.h"
-#include "servicios/PacienteServicio.h"
+#include "modelos/Cita.h"
 #include <iostream>
-#include <fstream>
-#include <limits>
+#include <string>
 
-using namespace std;
+// Constructor por defecto
+Cita::Cita() : duiPaciente(""), nombrePaciente(""), telefonoPaciente(""), tratamiento(""), fecha(""), hora(""), motivo("") {}
 
-void agendarCita() {
-    PacienteServicio pacienteServicio("pacientes.dat");
-    Cita c;
-    // c.idPaciente => DUI paciente
-    bool existePaciente = pacienteServicio.buscarPorDui(c.idPaciente).getDui().empty();
+// Constructor con todos los campos
+Cita::Cita(const std::string& duiPaciente,
+           const std::string& nombrePaciente,
+           const std::string& telefonoPaciente,
+           const std::string& tratamiento,
+           const std::string& fecha,
+           const std::string& hora,
+           const std::string& motivo)
+    : duiPaciente(duiPaciente),
+      nombrePaciente(nombrePaciente),
+      telefonoPaciente(telefonoPaciente),
+      tratamiento(tratamiento),
+      fecha(fecha),
+      hora(hora),
+      motivo(motivo) {}
 
-    cout << "\n=== Agendar Cita ===\n";
-    do {
-        cout << "DUI del paciente: ";
-        getline(cin, c.idPaciente);
-        if (existePaciente) {
-            cout << "Paciente no encontrado. Intente con un DUI válido.\n";
-        }
-    } while (existePaciente);
+// Getters
+std::string Cita::getDuiPaciente() const { return duiPaciente; }
+std::string Cita::getNombrePaciente() const { return nombrePaciente; }
+std::string Cita::getTelefonoPaciente() const { return telefonoPaciente; }
+std::string Cita::getTratamiento() const { return tratamiento; }
+std::string Cita::getFecha() const { return fecha; }
+std::string Cita::getHora() const { return hora; }
+std::string Cita::getMotivo() const { return motivo; }
 
-    cout << "Fecha (dd/mm/aaaa): ";
-    getline(cin, c.fecha);
-    cout << "Hora (hh:mm): ";
-    getline(cin, c.hora);
-    cout << "Motivo: ";
-    getline(cin, c.motivo);
+// Setters
+void Cita::setDuiPaciente(const std::string& dui) { duiPaciente = dui; }
+void Cita::setNombrePaciente(const std::string& nombre) { nombrePaciente = nombre; }
+void Cita::setTelefonoPaciente(const std::string& telefono) { telefonoPaciente = telefono; }
+void Cita::setTratamiento(const std::string& trat) { tratamiento = trat; }
+void Cita::setFecha(const std::string& fec) { fecha = fec; }
+void Cita::setHora(const std::string& h) { hora = h; }
+void Cita::setMotivo(const std::string& m) { motivo = m; }
 
-    ofstream bin("citas.dat", ios::binary | ios::app);
-    if (bin.is_open()) {
-        string motivoCifrado = encriptar(c.motivo);
-        size_t lenDui = c.idPaciente.size();
-        size_t lenFecha = c.fecha.size();
-        size_t lenHora = c.hora.size();
-        size_t lenMotivo = motivoCifrado.size();
-
-        bin.write((char*)&lenDui, sizeof(size_t));
-        bin.write(c.idPaciente.c_str(), lenDui);
-        bin.write((char*)&lenFecha, sizeof(size_t));
-        bin.write(c.fecha.c_str(), lenFecha);
-        bin.write((char*)&lenHora, sizeof(size_t));
-        bin.write(c.hora.c_str(), lenHora);
-        bin.write((char*)&lenMotivo, sizeof(size_t));
-        bin.write(motivoCifrado.c_str(), lenMotivo);
-
-        bin.close();
-        cout << "Cita registrada exitosamente.\n";
-    } else {
-        cerr << "Error al guardar en archivo binario.\n";
-    }
-}
-
-void mostrarCitas() {
-    ifstream bin("citas.dat", ios::binary);
-    if (!bin.is_open()) {
-        cerr << "No se pudo abrir el archivo de citas.\n";
-        return;
-    }
-
-    cout << "\n=== Lista de Citas ===\n";
-    while (bin.peek() != EOF) {
-        size_t lenDui, lenFecha, lenHora, lenMotivo;
-        bin.read((char*)&lenDui, sizeof(size_t));
-        string dui(lenDui, ' ');
-        bin.read(&dui[0], lenDui);
-
-        bin.read((char*)&lenFecha, sizeof(size_t));
-        string fecha(lenFecha, ' ');
-        bin.read(&fecha[0], lenFecha);
-
-        bin.read((char*)&lenHora, sizeof(size_t));
-        string hora(lenHora, ' ');
-        bin.read(&hora[0], lenHora);
-
-        bin.read((char*)&lenMotivo, sizeof(size_t));
-        string motivo(lenMotivo, ' ');
-        bin.read(&motivo[0], lenMotivo);
-
-        cout << "Paciente DUI: " << dui
-             << "\nFecha: " << fecha
-             << "\nHora: " << hora
-             << "\nMotivo: " << desencriptar(motivo)
-             << "\n----------------------\n";
-    }
-    bin.close();
+// Método para convertir la cita a una cadena (útil para guardar en el archivo)
+std::string Cita::toString() const {
+    return duiPaciente + "|" + nombrePaciente + "|" + telefonoPaciente + "|" + tratamiento + "|" + fecha + "|" + hora + "|" + motivo;
 }
