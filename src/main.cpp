@@ -10,39 +10,47 @@
 #include "servicios/PacienteServicio.h"
 
 #include "utils/constantes.h"
+#include "utils/login.h" // 🔐 Login agregado
 
 int main() {
-    
     MenuUtils::configurarConsola();
-    
+
     try {
-        // 1. crear los servicios
-        PacienteServicio pacienteServicio("pacientes.dat");
-        
-        // 2. crear los menus con sus respectivos servicios
-        PacienteMenu pacienteMenu(pacienteServicio);
-        CitasMenu citasMenu;
+        while (true) {
+            // Login antes de cada sesión
+            if (!iniciarSesion()) {
+                MenuUtils::mostrarMensajeError("No se pudo iniciar sesión. Cerrando el programa...");
+                break;
+            }
 
-        TratamientoMenu tratamientoMenu;
-        
-        // 3. crear el menu principal e inyectar los submodulos
-        MainMenu mainMenu(&pacienteMenu, &citasMenu, &tratamientoMenu);
+            // 1. crear los servicios
+            PacienteServicio pacienteServicio("pacientes.dat");
+            
+            // 2. crear los menus con sus respectivos servicios
+            PacienteMenu pacienteMenu(pacienteServicio);
+            CitasMenu citasMenu;
+          
+            TratamientoMenu tratamientoMenu;
+            
+            // 3. crear el menu principal e inyectar los submodulos
+            MainMenu mainMenu(&pacienteMenu, &citasMenu, &tratamientoMenu);
+            
+            // 4. ejecutar el menu principal
+            mainMenu.limpiarPantalla();
+            mainMenu.ejecutar();
 
-        
-        // 4. ejecutar el menu principal (SIN configurar consola nuevamente)
-        mainMenu.limpiarPantalla();
-        mainMenu.ejecutar();
-        
+            // Después de salir del menú principal, volverá al login automáticamente
+        }
     } catch (const std::exception& e) {
         MenuUtils::mostrarMensajeError("Error crítico en el sistema: " + std::string(e.what()));
         MenuUtils::pausar();
     }
-    
-    // restaurar config original antes de salir
+
     MenuUtils::restaurarColor();
-    
     return 0;
 }
+
+
 
 /*
 como agregar un nuevo submodulo con modelo/servicio/menu:
