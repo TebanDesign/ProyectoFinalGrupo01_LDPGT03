@@ -9,6 +9,8 @@ class InventarioServicio {
 private:
     std::string archivoInventario;
     std::vector<Inventario> inventarios;
+    void cargarDesdeArchivo();
+    void guardarEnArchivo() const;
 
 public:
     InventarioServicio(const std::string& archivo);
@@ -24,10 +26,9 @@ public:
     void editarMedicamento();
     void buscarMedicamento();
     void listarMedicamentos();
-    void descontarMedicamento();
     void aumentarStock();
-    
-    // Función añadida para tratamiento
+    void aumentarStock(const std::string& nombreMedicamento);  // Cambiado a pública
+    void descontarMedicamento();  // Nueva función sin parámetros
     bool descontarMedicamento(const std::string& medicamento, int cantidad);
 };
 

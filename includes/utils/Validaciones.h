@@ -21,6 +21,14 @@ public:
      */
     static bool validarDUI(const std::string& idStr);
 
+    /*
+    * aqui van los comentarios
+    */
+    static bool estaVencido(const std::string& fechaVencimiento);
+    
+    
+    static int compararFechas(const std::string& fecha1, const std::string& fecha2);
+
 private:
     /**
      * @brief funcion auxiliar para determinar si un año es bisiesto.

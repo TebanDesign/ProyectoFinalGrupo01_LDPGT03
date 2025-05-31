@@ -3,6 +3,8 @@
 
 #include <string>
 #include <vector>
+#include <algorithm>
+#include "utils/Validaciones.h"
 
 class Lote {
 private:
@@ -10,16 +12,20 @@ private:
     std::string fechaVencimiento;
     std::string fechaIngreso;
     float precioUnitario;
+    std::string numeroLote;
 
 public:
     Lote();
-    Lote(int cantidad, const std::string& fechaVencimiento, float precioUnitario, const std::string& fechaIngreso);
+    Lote(int cantidad, const std::string& fechaVencimiento, 
+         float precioUnitario, const std::string& fechaIngreso,
+         const std::string& numeroLote);
 
     // Getters
     int getCantidad() const;
     std::string getFechaVencimiento() const;
     std::string getFechaIngreso() const;
     float getPrecioUnitario() const;
+    std::string getNumeroLote() const;
     bool estaVencido() const;
 
     // Setters
@@ -27,6 +33,7 @@ public:
     void setFechaVencimiento(const std::string& fecha);
     void setFechaIngreso(const std::string& fecha);
     void setPrecioUnitario(float precio);
+    void setNumeroLote(const std::string& lote);
 };
 
 class Inventario {
@@ -50,6 +57,7 @@ public:
     std::vector<Lote>& getLotes();
     const std::vector<Lote>& getLotes() const;
     int getStockTotal() const;
+    Lote* buscarLotePorNumero(const std::string& numeroLote);
 
     // Setters
     void setNombre(const std::string& nombre);
@@ -58,7 +66,12 @@ public:
     void setPresentacion(const std::string& presentacion);
 
     void agregarLote(const Lote& lote);
+    bool descontarDeLote(const std::string& numeroLote, int cantidad);
     void mostrarLotes() const;
+    
+    // Políticas de gestión de inventario
+    bool descontarPEPS(int cantidad);  // Primero en Entrar, Primero en Salir
+    bool descontarUEPS(int cantidad);  // Último en Entrar, Primero en Salir
 };
 
 #endif
