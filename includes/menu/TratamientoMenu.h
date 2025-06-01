@@ -10,6 +10,6 @@ private:
     void registrar();
     void buscar();
     void editar();
-    void eliminar();
+    // void eliminar();
     void listarPorPaciente();  // reutiliza buscar
 };

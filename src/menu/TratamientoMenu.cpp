@@ -16,19 +16,19 @@ void TratamientoMenu::ejecutar() {
 
         MenuUtils::mostrarOpcion(1, "Registrar tratamiento");
         MenuUtils::mostrarOpcion(2, "Editar tratamiento");
-        MenuUtils::mostrarOpcion(3, "Eliminar tratamiento");
-        MenuUtils::mostrarOpcion(4, "Buscar por DUI");
+        MenuUtils::mostrarOpcion(3, "Buscar por DUI");
+        // MenuUtils::mostrarOpcion(4, "Eliminar tratamiento");
         MenuUtils::mostrarSeparador('-', 30, MenuUtils::GRIS);
         MenuUtils::mostrarOpcion(0, "Volver al menú principal");
 
-        opcion = MenuUtils::leerOpcion(0, 4);
+        opcion = MenuUtils::leerOpcion(0, 3);
         MenuUtils::limpiarPantalla();
 
         switch (opcion) {
             case 1: registrar(); break;
             case 2: editar(); break;
-            case 3: eliminar(); break;
-            case 4: buscar(); break;
+            case 3: buscar(); break;
+            // case 4: eliminar(); break;
             case 0:
                 MenuUtils::mostrarMensaje("Regresando al menú principal...", MenuUtils::AMARILLO);
                 MenuUtils::pausar();
@@ -53,14 +53,14 @@ void TratamientoMenu::editar() {
     MenuUtils::pausar();
 }
 
-void TratamientoMenu::eliminar() {
-    string dui, medicamento;
-    // cin.ignore(...) eliminado porque MenuUtils::leerOpcion ya limpia el búfer
-    cout << "DUI del paciente: "; getline(cin, dui);
-    cout << "Medicamento a eliminar: "; getline(cin, medicamento);
-    eliminarTratamientoEnArchivo(dui, medicamento);
-    MenuUtils::pausar();
-}
+// void TratamientoMenu::eliminar() {
+//     string dui, medicamento;
+//     // cin.ignore(...) eliminado porque MenuUtils::leerOpcion ya limpia el búfer
+//     cout << "DUI del paciente: "; getline(cin, dui);
+//     cout << "Medicamento a eliminar: "; getline(cin, medicamento);
+//     eliminarTratamientoEnArchivo(dui, medicamento);
+//     MenuUtils::pausar();
+// }
 
 void TratamientoMenu::buscar() {
     string dui;
