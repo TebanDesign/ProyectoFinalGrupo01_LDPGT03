@@ -9,12 +9,14 @@
 class PacienteServicio {
 private:
     std::string nombreArchivo;  //nombre del archivo binario
+    std::string rutaArchivo; // para almacenar la ruta completa del archivo a utilizar
 
     long buscarPosicionPorDui(const std::string& dui);
     bool serializarPaciente(std::fstream& archivo, const Paciente& paciente);
     Paciente deserializarPaciente(std::ifstream& archivo);
     std::string leerString(std::ifstream& archivo);
     void escribirString(std::fstream& archivo, std::string& texto);
+
 
 public:
     // constructor que recibe el nombre del archivo a utilizar
