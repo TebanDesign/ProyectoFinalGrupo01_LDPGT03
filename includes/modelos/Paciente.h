@@ -22,7 +22,6 @@ public:
             std::string& dui, 
             std::string& genero,
             std::string& fechaNacimiento,
-            // std::string& edad,
             std::string& comentarios
         );
     
@@ -39,7 +38,6 @@ public:
     void setDui(const std::string& dui);
     void setGenero(const std::string& genero);
     void setFechaNacimiento(const std::string& fechaNacimiento);
-    // void setEdad(const std::string& edad);
     void setComentariosSalud(const std::string& comentarios);
 
 };
