@@ -45,7 +45,7 @@ void MainMenu::ejecutar() {
             case 5:
                 if (confirmarCerrarSesion()) {
                     LoginService::cerrarSesion();
-                    return; // Sale del menú principal para volver al login
+                    return; // Sale del menu principal para volver al login
                 }
                 break;
             case 0:
@@ -138,8 +138,11 @@ bool MainMenu::confirmarCerrarSesion() {
 
     MenuUtils::limpiarPantalla();
     MenuUtils::mostrarTitulo("CERRAR SESIÓN", MenuUtils::ROJO, MenuUtils::BLANCO);
-    
-    MenuUtils::mostrarSubtitulo("¿Está seguro que desea cerrar la sesión actual?", MenuUtils::AMARILLO);
+    std::cout << "\n";
+
+    MenuUtils::mostrarMensajeAdvertencia("¿Está seguro que desea cerrar la sesión actual?");
+    std::cout << "\n";
+
     MenuUtils::mostrarOpcion(1, "Sí, cerrar sesión");
     MenuUtils::mostrarOpcion(2, "No, volver al menú");
     
