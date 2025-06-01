@@ -37,5 +37,4 @@ void Paciente::setNombre(const std::string& nombre) { this->nombre = nombre; }
 void Paciente::setDui(const std::string& dui) { this->dui = dui; }
 void Paciente::setGenero(const std::string& genero) { this-> genero = genero; }
 void Paciente::setFechaNacimiento(const std::string& fecha) { this->fechaNacimiento = fecha; }
-// void Paciente::setEdad(const std::string& edad) { this->edad = CalcularEdad::CalcularAsignarEdad(this->fechaNacimiento); }
 void Paciente::setComentariosSalud(const std::string& comentarios) { this->comentariosSalud = comentarios; }
