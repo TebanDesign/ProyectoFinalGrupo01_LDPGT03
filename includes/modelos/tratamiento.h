@@ -1,8 +1,9 @@
 #pragma once
 
 #include <string>
-#include <vector>
+#include <vector> // Necesario para las funciones auxiliares
 
+// Clase que representa un tratamiento asignado a un paciente
 class Tratamiento {
 private:
     std::string duiPaciente;
@@ -11,19 +12,23 @@ private:
     std::string frecuencia;
     std::string duracion;
     std::string observaciones;
-    std::string estado;
+    std::string estado; // Ej: Activo, Finalizado, Eliminado
 
 public:
+    // Constructor
     Tratamiento(std::string dui = "", std::string med = "", std::string dos = "", std::string frec = "",
                 std::string dur = "", std::string obs = "", std::string est = "");
 
-    void registrar();
-    void mostrar() const;
-    void editar();
-    void eliminar();
+    // Métodos de operación
+    void registrar();           // Permite ingresar un nuevo tratamiento
+    void mostrar() const;       // Muestra los detalles de un tratamiento
+    void editar();              // Permite modificar los campos de un tratamiento
+    void eliminar();            // Marca el tratamiento como eliminado (estado)
 
+    // Utilidad
     bool coincideCon(const std::string& dui, const std::string& med) const;
 
+    // Getters
     std::string getDUI() const;
     std::string getMedicamento() const;
     std::string getDosis() const;

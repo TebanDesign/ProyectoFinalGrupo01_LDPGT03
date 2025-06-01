@@ -8,11 +8,13 @@
 
 using namespace std;
 
+// Constructor
 Tratamiento::Tratamiento(string dui, string med, string dos, string frec,
                          string dur, string obs, string est)
     : duiPaciente(dui), medicamento(med), dosis(dos), frecuencia(frec),
       duracion(dur), observaciones(obs), estado(est) {}
 
+// Registro de nuevo tratamiento
 void Tratamiento::registrar() {
     cin.ignore(numeric_limits<streamsize>::max(), '\n');
     MenuUtils::mostrarTitulo("Registrar Tratamiento", MenuUtils::MAGENTA);
@@ -47,6 +49,7 @@ void Tratamiento::registrar() {
     }
 }
 
+// Mostrar tratamiento
 void Tratamiento::mostrar() const {
     MenuUtils::mostrarSubtitulo("Tratamiento", MenuUtils::CYAN);
     cout << "DUI: " << duiPaciente
@@ -58,6 +61,7 @@ void Tratamiento::mostrar() const {
          << "\nEstado: " << estado << "\n----------------------\n";
 }
 
+// Editar tratamiento (solo si se ingresan nuevos valores)
 void Tratamiento::editar() {
     string input;
     MenuUtils::mostrarTitulo("Editar Tratamiento", MenuUtils::MAGENTA);
@@ -83,15 +87,18 @@ void Tratamiento::editar() {
     MenuUtils::mostrarMensaje("Tratamiento actualizado.", MenuUtils::VERDE);
 }
 
+// Eliminar tratamiento (cambia el estado)
 void Tratamiento::eliminar() {
     estado = "Eliminado";
     MenuUtils::mostrarMensaje("Tratamiento marcado como eliminado.", MenuUtils::ROJO);
 }
 
+// Comparar tratamiento por DUI y Medicamento
 bool Tratamiento::coincideCon(const string& dui, const string& med) const {
     return duiPaciente == dui && medicamento == med;
 }
 
+// Getters
 string Tratamiento::getDUI() const { return duiPaciente; }
 string Tratamiento::getMedicamento() const { return medicamento; }
 string Tratamiento::getEstado() const { return estado; }
@@ -100,9 +107,9 @@ string Tratamiento::getFrecuencia() const { return frecuencia; }
 string Tratamiento::getDuracion() const { return duracion; }
 string Tratamiento::getObservaciones() const { return observaciones; }
 
-// Métodos adicionales reflejando tratamiento.h
-// #include "modelos/tratamiento_utils.h"
+// Funciones de archivo
 
+// Buscar y editar tratamiento en archivo
 void editarTratamientoEnArchivo(const string& dui, const string& med) {
     vector<Tratamiento> lista = cargarTratamientosDesdeArchivo();
     bool encontrado = false;
@@ -136,6 +143,7 @@ void editarTratamientoEnArchivo(const string& dui, const string& med) {
     else MenuUtils::mostrarMensaje("Tratamiento no encontrado.", MenuUtils::ROJO);
 }
 
+// Buscar y marcar como eliminado
 void eliminarTratamientoEnArchivo(const string& dui, const string& med) {
     vector<Tratamiento> lista = cargarTratamientosDesdeArchivo();
     bool encontrado = false;
@@ -169,6 +177,7 @@ void eliminarTratamientoEnArchivo(const string& dui, const string& med) {
     else MenuUtils::mostrarMensaje("Tratamiento no encontrado.", MenuUtils::ROJO);
 }
 
+// Leer tratamientos desde archivo
 vector<Tratamiento> cargarTratamientosDesdeArchivo() {
     ifstream archivo("./output/tratamientos.dat", ios::binary);
     vector<Tratamiento> lista;
@@ -196,6 +205,7 @@ vector<Tratamiento> cargarTratamientosDesdeArchivo() {
     return lista;
 }
 
+// Mostrar tratamientos activos por paciente
 void mostrarTratamientosPorDUI(const string& dui) {
     vector<Tratamiento> lista = cargarTratamientosDesdeArchivo();
     MenuUtils::mostrarTitulo("Tratamientos del paciente: " + dui, MenuUtils::CYAN);

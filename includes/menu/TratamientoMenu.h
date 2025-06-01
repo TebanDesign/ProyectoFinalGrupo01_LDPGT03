@@ -2,14 +2,13 @@
 
 #include <string>
 
+// Clase de menú que gestiona las opciones relacionadas a tratamientos
 class TratamientoMenu {
 public:
-    void ejecutar();
+    void ejecutar(); // Lanza el menú principal de tratamientos
 
 private:
-    void registrar();
-    void buscar();
-    void editar();
-    // void eliminar();
-    void listarPorPaciente();  // reutiliza buscar
+    void registrar();           // Registra un nuevo tratamiento
+    void buscar();              // Muestra tratamientos por DUI
+    void editar();              // Edita un tratamiento existente
 };
