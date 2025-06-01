@@ -5,9 +5,11 @@
 #include "menu/PacienteMenu.h"
 #include "menu/CitasMenu.h"
 #include "menu/TratamientoMenu.h"
+#include "menu/InventarioMenu.h"
 #include "menu/MenuUtils.h"
 
 #include "servicios/PacienteServicio.h"
+#include "servicios/InventarioServicio.h"
 
 #include "utils/constantes.h"
 #include "utils/login.h" // 🔐 Login agregado
@@ -25,15 +27,17 @@ int main() {
 
             // 1. crear los servicios
             PacienteServicio pacienteServicio("pacientes.dat");
+            InventarioServicio inventarioServicio("inventario.dat");
             
             // 2. crear los menus con sus respectivos servicios
             PacienteMenu pacienteMenu(pacienteServicio);
             CitasMenu citasMenu;
+            InventarioMenu inventarioMenu(inventarioServicio);
           
             TratamientoMenu tratamientoMenu;
             
             // 3. crear el menu principal e inyectar los submodulos
-            MainMenu mainMenu(&pacienteMenu, &citasMenu, &tratamientoMenu);
+            MainMenu mainMenu(&pacienteMenu, &citasMenu, &tratamientoMenu, &inventarioMenu);
             
             // 4. ejecutar el menu principal
             mainMenu.limpiarPantalla();
