@@ -1,13 +1,9 @@
-// Descripción: Clase orientada a objetos para la gestión de tratamientos
+#pragma once
 
-#ifndef TRATAMIENTO_H
-#define TRATAMIENTO_H
-
-#include "Registro.h"
 #include <string>
 #include <vector>
 
-class Tratamiento : public Registro {
+class Tratamiento {
 private:
     std::string duiPaciente;
     std::string medicamento;
@@ -18,34 +14,27 @@ private:
     std::string estado;
 
 public:
-    // Constructores
-    Tratamiento() = default;
-    Tratamiento(std::string dui, std::string med, std::string dos, std::string frec,
-                std::string dur, std::string obs, std::string est);
+    Tratamiento(std::string dui = "", std::string med = "", std::string dos = "", std::string frec = "",
+                std::string dur = "", std::string obs = "", std::string est = "");
 
-    // Métodos heredados
-    void registrar() override;
-    void mostrar() const override;
-    void editar() override;
-    void eliminar() override;
+    void registrar();
+    void mostrar() const;
+    void editar();
+    void eliminar();
 
-    // Métodos de utilidad
     bool coincideCon(const std::string& dui, const std::string& med) const;
 
-    // Métodos de acceso (getters)
     std::string getDUI() const;
     std::string getMedicamento() const;
-    std::string getEstado() const;
     std::string getDosis() const;
     std::string getFrecuencia() const;
     std::string getDuracion() const;
     std::string getObservaciones() const;
+    std::string getEstado() const;
 };
 
-// Funciones complementarias
-std::vector<Tratamiento> cargarTratamientosDesdeArchivo();
-void mostrarTratamientosPorDUI(const std::string& dui);
+// Funciones auxiliares
 void editarTratamientoEnArchivo(const std::string& dui, const std::string& med);
 void eliminarTratamientoEnArchivo(const std::string& dui, const std::string& med);
-
-#endif
+std::vector<Tratamiento> cargarTratamientosDesdeArchivo();
+void mostrarTratamientosPorDUI(const std::string& dui);

@@ -1,8 +1,15 @@
 #pragma once
-#include <iostream>
+
+#include <string>
 
 class TratamientoMenu {
 public:
-    TratamientoMenu();
     void ejecutar();
+
+private:
+    void registrar();
+    void buscar();
+    void editar();
+    void eliminar();
+    void listarPorPaciente();  // reutiliza buscar
 };

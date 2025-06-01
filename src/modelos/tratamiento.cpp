@@ -1,10 +1,10 @@
-// Descripción: Implementación de la clase Tratamiento con herencia de Registro
-
-#include "Tratamiento.h"
 #include <iostream>
 #include <fstream>
 #include <limits>
 #include <vector>
+
+#include "modelos/tratamiento.h"
+#include "menu/MenuUtils.h"
 
 using namespace std;
 
@@ -15,7 +15,7 @@ Tratamiento::Tratamiento(string dui, string med, string dos, string frec,
 
 void Tratamiento::registrar() {
     cin.ignore(numeric_limits<streamsize>::max(), '\n');
-    cout << "\n=== Registrar Tratamiento ===\n";
+    MenuUtils::mostrarTitulo("Registrar Tratamiento", MenuUtils::MAGENTA);
     cout << "DUI del paciente: "; getline(cin, duiPaciente);
     cout << "Medicamento: "; getline(cin, medicamento);
     cout << "Dosis: "; getline(cin, dosis);
@@ -41,12 +41,15 @@ void Tratamiento::registrar() {
         writeStr(estado);
 
         archivo.close();
-        cout << "Tratamiento registrado correctamente.\n";
+        MenuUtils::mostrarMensaje("Tratamiento registrado correctamente.", MenuUtils::VERDE);
+    } else {
+        MenuUtils::mostrarMensajeError("No se pudo abrir el archivo para guardar el tratamiento.");
     }
 }
 
 void Tratamiento::mostrar() const {
-    cout << "\nDUI: " << duiPaciente
+    MenuUtils::mostrarSubtitulo("Tratamiento", MenuUtils::CYAN);
+    cout << "DUI: " << duiPaciente
          << "\nMedicamento: " << medicamento
          << "\nDosis: " << dosis
          << "\nFrecuencia: " << frecuencia
@@ -57,16 +60,32 @@ void Tratamiento::mostrar() const {
 
 void Tratamiento::editar() {
     string input;
-    cout << "\n=== Editar Tratamiento ===\n";
-    cout << "Nueva dosis (actual: " << dosis << "): "; getline(cin, input); if (!input.empty()) dosis = input;
-    cout << "Nueva frecuencia (actual: " << frecuencia << "): "; getline(cin, input); if (!input.empty()) frecuencia = input;
-    cout << "Nueva duración (actual: " << duracion << "): "; getline(cin, input); if (!input.empty()) duracion = input;
-    cout << "Nuevas observaciones: "; getline(cin, input); if (!input.empty()) observaciones = input;
-    cout << "Nuevo estado: "; getline(cin, input); if (!input.empty()) estado = input;
+    MenuUtils::mostrarTitulo("Editar Tratamiento", MenuUtils::MAGENTA);
+    cout << "Nueva dosis (actual: " << dosis << "): ";
+    getline(cin, input);
+    if (!input.empty()) dosis = input;
+
+    cout << "Nueva frecuencia (actual: " << frecuencia << "): ";
+    getline(cin, input);
+    if (!input.empty()) frecuencia = input;
+
+    cout << "Nueva duración (actual: " << duracion << "): ";
+    getline(cin, input);
+    if (!input.empty()) duracion = input;
+
+    cout << "Nuevas observaciones (actual: " << observaciones << "): ";
+    getline(cin, input);
+    if (!input.empty()) observaciones = input;
+
+    cout << "Nuevo estado (actual: " << estado << "): ";
+    getline(cin, input);
+    if (!input.empty()) estado = input;
+    MenuUtils::mostrarMensaje("Tratamiento actualizado.", MenuUtils::VERDE);
 }
 
 void Tratamiento::eliminar() {
     estado = "Eliminado";
+    MenuUtils::mostrarMensaje("Tratamiento marcado como eliminado.", MenuUtils::ROJO);
 }
 
 bool Tratamiento::coincideCon(const string& dui, const string& med) const {
@@ -81,14 +100,15 @@ string Tratamiento::getFrecuencia() const { return frecuencia; }
 string Tratamiento::getDuracion() const { return duracion; }
 string Tratamiento::getObservaciones() const { return observaciones; }
 
-// ================= FUNCIONES COMPLEMENTARIAS ===================
+// Métodos adicionales reflejando tratamiento.h
+// #include "modelos/tratamiento_utils.h"
 
 void editarTratamientoEnArchivo(const string& dui, const string& med) {
     vector<Tratamiento> lista = cargarTratamientosDesdeArchivo();
     bool encontrado = false;
     ofstream archivo("./output/tratamientos.dat", ios::binary | ios::trunc);
     if (!archivo.is_open()) {
-        cerr << "No se pudo abrir el archivo para editar.";
+        MenuUtils::mostrarMensajeError("No se pudo abrir el archivo para editar.");
         return;
     }
     for (auto& t : lista) {
@@ -112,8 +132,8 @@ void editarTratamientoEnArchivo(const string& dui, const string& med) {
         writeStr(t.getEstado());
     }
     archivo.close();
-    if (encontrado) cout << "Tratamiento editado exitosamente.";
-    else cout << "Tratamiento no encontrado.";
+    if (encontrado) MenuUtils::mostrarMensaje("Tratamiento editado exitosamente.", MenuUtils::VERDE);
+    else MenuUtils::mostrarMensaje("Tratamiento no encontrado.", MenuUtils::ROJO);
 }
 
 void eliminarTratamientoEnArchivo(const string& dui, const string& med) {
@@ -121,7 +141,7 @@ void eliminarTratamientoEnArchivo(const string& dui, const string& med) {
     bool encontrado = false;
     ofstream archivo("./output/tratamientos.dat", ios::binary | ios::trunc);
     if (!archivo.is_open()) {
-        cerr << "No se pudo abrir el archivo para eliminar.";
+        MenuUtils::mostrarMensajeError("No se pudo abrir el archivo para eliminar.");
         return;
     }
     for (auto& t : lista) {
@@ -145,8 +165,8 @@ void eliminarTratamientoEnArchivo(const string& dui, const string& med) {
         writeStr(t.getEstado());
     }
     archivo.close();
-    if (encontrado) cout << "Tratamiento marcado como eliminado.";
-    else cout << "Tratamiento no encontrado.";
+    if (encontrado) MenuUtils::mostrarMensaje("Tratamiento eliminado correctamente.", MenuUtils::ROJO);
+    else MenuUtils::mostrarMensaje("Tratamiento no encontrado.", MenuUtils::ROJO);
 }
 
 vector<Tratamiento> cargarTratamientosDesdeArchivo() {
@@ -178,13 +198,10 @@ vector<Tratamiento> cargarTratamientosDesdeArchivo() {
 
 void mostrarTratamientosPorDUI(const string& dui) {
     vector<Tratamiento> lista = cargarTratamientosDesdeArchivo();
-    cout << "\n=== Tratamientos para paciente: " << dui << " ===\n";
-    if (lista.empty()) cout << "Tratamiento no encontrado.";
-    else {
-        for (const auto& t : lista) {
-            if (t.getDUI() == dui && t.getEstado() != "Eliminado") {
-                t.mostrar();
-            }
+    MenuUtils::mostrarTitulo("Tratamientos del paciente: " + dui, MenuUtils::CYAN);
+    for (const auto& t : lista) {
+        if (t.getDUI() == dui && t.getEstado() != "Eliminado") {
+            t.mostrar();
         }
     }
 }
