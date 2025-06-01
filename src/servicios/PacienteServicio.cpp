@@ -1,17 +1,19 @@
-#include "PacienteServicio.h"
 #include <iostream>
 #include <string>
 #include <fstream>
 #include <stdexcept>
 #include <vector>
 
+#include "PacienteServicio.h"
+#include "utils/fileSistem.h"
+
 using namespace std;
 
 PacienteServicio::PacienteServicio(const string& nombreArchivo) : nombreArchivo(nombreArchivo) {
-    ofstream archivo(nombreArchivo, ios::binary | ios::app);
+    rutaArchivo = FileSistem::escribirArchivoBinarioOrganizado(nombreArchivo,"Pacientes");
+    ofstream archivo(rutaArchivo, ios::binary | ios::app);
     archivo.close();
 }
-
 
 bool PacienteServicio::agregarPaciente(const Paciente& paciente) {
 
@@ -23,7 +25,7 @@ bool PacienteServicio::agregarPaciente(const Paciente& paciente) {
     }
 
     // abrir archivo en modo append binario
-    std::fstream archivo(nombreArchivo, std::ios::binary | std::ios::out | std::ios::app);
+    std::fstream archivo(rutaArchivo, std::ios::binary | std::ios::out | std::ios::app);
 
     if (!archivo.is_open()) {
         throw runtime_error("No se pudo abrir el archivo para agregar paciente");
@@ -43,7 +45,7 @@ bool PacienteServicio::agregarPaciente(const Paciente& paciente) {
 
 bool PacienteServicio::editarPaciente(const string& dui, const Paciente& pacienteActualizado) {
     // abrir el archivo en modo lectura/escritura
-    std::fstream archivo(nombreArchivo, std::ios::binary | std::ios::in | std::ios::out);
+    std::fstream archivo(rutaArchivo, std::ios::binary | std::ios::in | std::ios::out);
     if (!archivo.is_open()) {
         throw std::runtime_error("No se pudo abrir el archivo para lectura/escritura");
     }
@@ -78,7 +80,7 @@ bool PacienteServicio::editarPaciente(const string& dui, const Paciente& pacient
 
 long PacienteServicio::buscarPosicionPorDui(const string& dui) {
 
-    std::ifstream archivo(nombreArchivo, std::ios::binary);
+    std::ifstream archivo(rutaArchivo, std::ios::binary);
 
     if (!archivo.is_open()) {
         throw std::runtime_error("No se pudo abrir el archivo para buscar paciente");
@@ -106,7 +108,7 @@ long PacienteServicio::buscarPosicionPorDui(const string& dui) {
 
 Paciente PacienteServicio::buscarPorDui(const string& duiPaciente) {
 
-    std::ifstream archivo(nombreArchivo, std::ios::binary);
+    std::ifstream archivo(rutaArchivo, std::ios::binary);
     if (!archivo.is_open()) {
         throw runtime_error("No se pudo abrir el archivo para buscar paciente");
     }
@@ -164,7 +166,7 @@ std::string PacienteServicio::leerString(std::ifstream& archivo) {
 
 vector<Paciente> PacienteServicio::obtenerTodosLosPacientes() {
 
-    std::ifstream archivo(nombreArchivo, std::ios::binary);
+    std::ifstream archivo(rutaArchivo, std::ios::binary);
 
     if (!archivo.is_open()) {
         throw runtime_error("No se pudo abrir el archivo para leer pacientes");
@@ -217,7 +219,7 @@ Paciente PacienteServicio::deserializarPaciente(ifstream& archivo) {
 
 bool PacienteServicio::archivoTieneDatos() {
     
-    std::ifstream archivo(nombreArchivo, std::ios::binary);
+    std::ifstream archivo(rutaArchivo, std::ios::binary);
     if (!archivo.is_open()) {
         return false;
     }

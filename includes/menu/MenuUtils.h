@@ -50,14 +50,9 @@ public:
 
     // Funciones de entrada
     static int leerOpcion(int min, int max);
+    
+    // muestra un mensaje de carga por una duracion predeterminada
     static void mostrarCargando(const std::string& mensaje = "Cargando", int duracion = 1000);
-
-    // NUEVAS FUNCIONES para manejo de mouse
-    static void habilitarSeleccionMouse();
-    static void deshabilitarSeleccionMouse();
-    static void alternarSeleccionMouse();
-    static bool isSeleccionMouseHabilitada();
-    static void mostrarAyudaSeleccion();
 
 private:
     static HANDLE hConsole;
