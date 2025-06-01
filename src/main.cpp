@@ -10,40 +10,48 @@
 
 #include "servicios/PacienteServicio.h"
 #include "servicios/InventarioServicio.h"
+#include "servicios/LoginService.h"// 🔐 Login agregado
 
 #include "utils/constantes.h"
-#include "utils/login.h" // 🔐 Login agregado
 
 int main() {
     MenuUtils::configurarConsola();
 
     try {
+
+        // 1. crear los servicios
+        PacienteServicio pacienteServicio("pacientes.dat");
+        InventarioServicio inventarioServicio("inventario.dat");
+        
+        // 2. crear los menus con sus respectivos servicios
+        PacienteMenu pacienteMenu(pacienteServicio);
+        CitasMenu citasMenu;
+        InventarioMenu inventarioMenu(inventarioServicio);
+        
+        TratamientoMenu tratamientoMenu;
+        
+        // 3. crear el menu principal e inyectar los submodulos
+        MainMenu mainMenu(&pacienteMenu, &citasMenu, &tratamientoMenu, &inventarioMenu);
+        
+
         while (true) {
+
             // Login antes de cada sesión
-            if (!iniciarSesion()) {
-                MenuUtils::mostrarMensajeError("No se pudo iniciar sesión. Cerrando el programa...");
-                break;
+            if (LoginService::iniciarSesion()) {
+                // si el login es existoso
+                // 4. ejecutar el menu principal
+                mainMenu.limpiarPantalla();
+                mainMenu.ejecutar();
             }
 
-            // 1. crear los servicios
-            PacienteServicio pacienteServicio("pacientes.dat");
-            InventarioServicio inventarioServicio("inventario.dat");
-            
-            // 2. crear los menus con sus respectivos servicios
-            PacienteMenu pacienteMenu(pacienteServicio);
-            CitasMenu citasMenu;
-            InventarioMenu inventarioMenu(inventarioServicio);
-          
-            TratamientoMenu tratamientoMenu;
-            
-            // 3. crear el menu principal e inyectar los submodulos
-            MainMenu mainMenu(&pacienteMenu, &citasMenu, &tratamientoMenu, &inventarioMenu);
-            
-            // 4. ejecutar el menu principal
-            mainMenu.limpiarPantalla();
-            mainMenu.ejecutar();
-
-            // Después de salir del menú principal, volverá al login automáticamente
+            // Cuando regrese del menú principal, verificar si la sesión sigue activa
+            // Si no está activa, significa que se cerró sesión y debe volver al login
+            if (!LoginService::esSesionActiva()) {
+                continue; // Vuelve al inicio del bucle (pantalla de login)
+            } else {
+                // Si la sesión sigue activa pero salió del menú, significa que eligió "Salir del Sistema"
+                break; // Sale del programa completamente
+            }
         }
     } catch (const std::exception& e) {
         MenuUtils::mostrarMensajeError("Error crítico en el sistema: " + std::string(e.what()));

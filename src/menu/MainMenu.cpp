@@ -5,9 +5,7 @@
 #include "menu/CitasMenu.h"
 #include "menu/TratamientoMenu.h"
 #include "menu/InventarioMenu.h"
-
-
-// #include "MedicamentoMenu.h" // para cuando agreguemos nuevos submodulos
+#include "servicios/LoginService.h"
 
 MainMenu::MainMenu(PacienteMenu* pacienteMenu, CitasMenu* citasMenu, TratamientoMenu* tratamientoMenu, InventarioMenu* inventarioMenu) {
     this->pacienteMenu = std::unique_ptr<PacienteMenu>(pacienteMenu);
@@ -21,7 +19,7 @@ void MainMenu::ejecutar() {
     int opcion;
     do {
         mostrarMenuPrincipal();
-        opcion = MenuUtils::leerOpcion(0, 4);
+        opcion = MenuUtils::leerOpcion(0, 5);
 
         switch(opcion) {
             case 1:
@@ -43,6 +41,12 @@ void MainMenu::ejecutar() {
                 MenuUtils::limpiarPantalla();
                 MenuUtils::mostrarCargando("Cargando módulo de inventario");
                 inventarioMenu->ejecutar();
+                break;
+            case 5:
+                if (confirmarCerrarSesion()) {
+                    LoginService::cerrarSesion();
+                    return; // Sale del menú principal para volver al login
+                }
                 break;
             case 0:
                 mostrarSalida();
@@ -68,14 +72,15 @@ void MainMenu::mostrarMenuPrincipal() {
     MenuUtils::mostrarOpcion(2, "Gestión de Citas");
     MenuUtils::mostrarOpcion(3, "Gestión de Tratamientos");
     MenuUtils::mostrarOpcion(4, "Gestión de Inventario");
-    // MenuUtils::mostrarOpcion(3, "Gestión de Medicamentos", false); // ejemplo para agregar nueva opcion
     
     MenuUtils::mostrarSeparador('-', 30, MenuUtils::GRIS);
+    MenuUtils::mostrarOpcion(5, "Cerrar Sesión");
     MenuUtils::mostrarOpcion(0, "Salir del Sistema");
     
     std::cout << "\n";
 }
 
+// muestra el banner al entrar al sistema 
 void MainMenu::mostrarBanner() {
     std::vector<std::string> banner = {
         "   +======================================+",
@@ -94,6 +99,7 @@ void MainMenu::mostrarBanner() {
     MenuUtils::restaurarColor();
 }
 
+// muestra en pantalla un mensaje de salida del sistema
 void MainMenu::mostrarSalida() {
     MenuUtils::limpiarPantalla();
     
@@ -118,10 +124,25 @@ void MainMenu::mostrarSalida() {
     MenuUtils::limpiarPantalla();
 }
 
+// limpia la pantalla, sirve para windows, linux y macos
 void MainMenu::limpiarPantalla() {
     #ifdef _WIN32
         system("cls");
     #else
         system("clear");
     #endif
+}
+
+// metod que solicita la confirmacion para cerrara la sesion
+bool MainMenu::confirmarCerrarSesion() {
+
+    MenuUtils::limpiarPantalla();
+    MenuUtils::mostrarTitulo("CERRAR SESIÓN", MenuUtils::ROJO, MenuUtils::BLANCO);
+    
+    MenuUtils::mostrarSubtitulo("¿Está seguro que desea cerrar la sesión actual?", MenuUtils::AMARILLO);
+    MenuUtils::mostrarOpcion(1, "Sí, cerrar sesión");
+    MenuUtils::mostrarOpcion(2, "No, volver al menú");
+    
+    int confirmacion = MenuUtils::leerOpcion(1, 2);
+    return (confirmacion == 1);
 }

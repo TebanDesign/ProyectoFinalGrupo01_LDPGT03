@@ -24,4 +24,5 @@ public:
     void ejecutar();
     void mostrarMenuPrincipal();
     void limpiarPantalla();
+    bool confirmarCerrarSesion();
 };
