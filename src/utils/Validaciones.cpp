@@ -1,6 +1,6 @@
 #include <sstream>
 #include <cctype> 
-
+#include <ctime>
 #include "utils/Validaciones.h"
 
 bool Validaciones::esBisiesto(int anio) {
@@ -81,4 +81,43 @@ bool Validaciones::validarDUI(const std::string& idStr) {
     }
 
     return true; // Si todas las verificaciones pasan, el formato es válido
+}
+
+bool Validaciones::estaVencido(const std::string& fechaVencimiento) {
+    if (!validarFecha(fechaVencimiento)) return false;
+    
+    time_t t = time(nullptr);
+    tm* now = localtime(&t);
+    
+    int dia = now->tm_mday;
+    int mes = now->tm_mon + 1;
+    int anio = now->tm_year + 1900;
+    
+    int diaVen = std::stoi(fechaVencimiento.substr(0, 2));
+    int mesVen = std::stoi(fechaVencimiento.substr(3, 2));
+    int anioVen = std::stoi(fechaVencimiento.substr(6, 4));
+    
+    if (anioVen < anio) return true;
+    if (anioVen == anio && mesVen < mes) return true;
+    if (anioVen == anio && mesVen == mes && diaVen < dia) return true;
+    
+    return false;
+}
+
+int Validaciones::compararFechas(const std::string& fecha1, const std::string& fecha2) {
+    // Convertir a AAAAMMDD para comparación
+    auto convertir = [](const std::string& fecha) -> int {
+        if (!validarFecha(fecha)) return 0;
+        int dia = std::stoi(fecha.substr(0, 2));
+        int mes = std::stoi(fecha.substr(3, 2));
+        int anio = std::stoi(fecha.substr(6, 4));
+        return anio * 10000 + mes * 100 + dia;
+    };
+    
+    int f1 = convertir(fecha1);
+    int f2 = convertir(fecha2);
+    
+    if (f1 < f2) return -1;
+    if (f1 > f2) return 1;
+    return 0;
 }

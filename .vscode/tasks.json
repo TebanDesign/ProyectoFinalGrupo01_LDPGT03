@@ -8,6 +8,7 @@
 			"args": [
 				"-fdiagnostics-color=always",
 				"-g",
+				"-std=c++17",
 
 				// inclusion de archivos .h de los directorios
 				"-I",
@@ -32,7 +33,8 @@
 
 				// configuracion donde guardar el ejecutable
 				"-o",
-				"${workspaceFolder}\\bin\\ClinicaDentalRP.exe"
+				"${workspaceFolder}\\bin\\ClinicaDentalRP.exe",
+                "-lstdc++fs"
 			],
 			"options": {
 				"cwd": "${workspaceFolder}"

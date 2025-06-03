@@ -82,6 +82,7 @@
         "stop_token": "cpp",
         "thread": "cpp",
         "variant": "cpp",
-        "xtree": "cpp"
+        "xtree": "cpp",
+        "codecvt": "cpp"
     }
 }

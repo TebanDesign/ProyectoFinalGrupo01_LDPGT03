@@ -21,6 +21,29 @@ public:
      */
     static bool validarDUI(const std::string& idStr);
 
+
+    /**
+     * @brief Verifica si una fecha de vencimiento dada ha caducado.
+     * @param fechaVencimiento La fecha de vencimiento en formato de cadena (ej. "DD/MM/YYYY").
+     * @return `true` si la fecha de vencimiento ya paso, `false` en caso contrario.
+     */
+    static bool estaVencido(const std::string& fechaVencimiento);
+    
+    /**
+     * @brief Compara dos fechas dadas en formato de cadena (DD/MM/AAAA).
+     *
+     * Esta función convierte ambas fechas a un formato numérico entero (AAAAMMDD)
+     * para realizar una comparación directa y determinar su orden cronológico.
+     *
+     * @param fecha1 La primera fecha a comparar, en formato "DD/MM/AAAA".
+     * @param fecha2 La segunda fecha a comparar, en formato "DD/MM/AAAA".
+     * @return Un entero que indica la relación entre las dos fechas:
+     * - **-1** si `fecha1` es cronologicamente anterior a `fecha2`.
+     * - **0** si `fecha1` es igual a `fecha2`.
+     * - **1** si `fecha1` es cronologicamente posterior a `fecha2`.
+     */
+    static int compararFechas(const std::string& fecha1, const std::string& fecha2);
+
 private:
     /**
      * @brief funcion auxiliar para determinar si un año es bisiesto.
