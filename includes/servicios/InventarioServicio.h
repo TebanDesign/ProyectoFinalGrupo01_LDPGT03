@@ -4,16 +4,17 @@
 #include <string>
 #include <vector>
 #include "Inventario.h"
+#include "utils/fileSistem.h"  // Incluir el nuevo sistema de archivos
 
 class InventarioServicio {
 private:
-    std::string archivoInventario;
+    std::string rutaArchivo;  // Almacenará la ruta completa organizada
     std::vector<Inventario> inventarios;
-    void cargarDesdeArchivo();
-    void guardarEnArchivo() const;
+
 
 public:
-    InventarioServicio(const std::string& archivo);
+    // Constructor ahora recibe solo el nombre base del archivo
+    InventarioServicio(const std::string& nombreArchivo);
 
     // Métodos básicos
     void agregarLote(const Inventario& nuevoLote);
@@ -30,6 +31,10 @@ public:
     void aumentarStock(const std::string& nombreMedicamento);  // Cambiado a pública
     void descontarMedicamento();  // Nueva función sin parámetros
     bool descontarMedicamento(const std::string& medicamento, int cantidad);
+
+    // Nuevos métodos para gestión de archivos
+    void cargarDesdeArchivo();
+    void guardarEnArchivo() const;
 };
 
 #endif
