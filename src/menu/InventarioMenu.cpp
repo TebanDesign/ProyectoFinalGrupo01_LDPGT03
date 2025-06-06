@@ -6,33 +6,49 @@
 
 using namespace std;
 
-InventarioMenu::InventarioMenu(InventarioServicio& servicio) : inventarioServicio(servicio) {}
+// Constructor que inyecta el servicio de inventario
+InventarioMenu::InventarioMenu(InventarioServicio& servicio) 
+    : inventarioServicio(servicio) {}  // Inicializa referencia
 
+
+// Implementación del menú principal de inventario    
 void InventarioMenu::ejecutar() {
     int opcion;
 
+    // Bucle principal del menú
     do {
+        // Limpiar pantalla y mostrar elementos visuales
         MenuUtils::limpiarPantalla();
-        mostrarBannerInventario();
+        mostrarBannerInventario();  // Muestra banner superior
 
+        // Mostrar título del módulo con colores
         MenuUtils::mostrarTitulo("GESTIÓN DE INVENTARIO", MenuUtils::AZUL_OSCURO, MenuUtils::BLANCO);
-        cout << endl;
-
+        cout << endl;   // Separador visual
+        
+        // === Menú de opciones dinámico ===
+        // Opción 1: Siempre disponible
         MenuUtils::mostrarOpcion(1, "Agregar medicamento");
+
+        // Opciones 2-6: Solo disponibles si existen medicamentos
         MenuUtils::mostrarOpcion(2, "Editar medicamento", inventarioServicio.existenMedicamentos());
         MenuUtils::mostrarOpcion(3, "Buscar medicamento", inventarioServicio.existenMedicamentos());
         MenuUtils::mostrarOpcion(4, "Listar medicamentos", inventarioServicio.existenMedicamentos());
         MenuUtils::mostrarOpcion(5, "Descontar medicamento", inventarioServicio.existenMedicamentos());
         MenuUtils::mostrarOpcion(6, "Aumentar stock", inventarioServicio.existenMedicamentos());
 
+        // Separador y opción para salir
         MenuUtils::mostrarSeparador('-', 30, MenuUtils::GRIS);
         MenuUtils::mostrarOpcion(0, "Volver al menu principal");
 
         cout << endl;
+        
+        // Leer opción válida (rango 0-6)
         opcion = MenuUtils::leerOpcion(0, 6);
 
+        // Limpiar pantalla antes de ejecutar acción
         MenuUtils::limpiarPantalla();
 
+        // === Gestión de opciones ===
         switch (opcion) {
             case 1:
                 inventarioServicio.agregarMedicamento();

@@ -8,21 +8,53 @@
 #include "menu/MenuUtils.h"
 
 
-
-/* 
-InventarioServicio::InventarioServicio(const std::string& archivo) : archivoInventario(archivo) {
-    // Cargar datos iniciales desde archivo
+// Función auxiliar para limpiar entrada inválida
+void limpiarEntrada() {
+    std::cin.clear();
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 }
 
-*/
-InventarioServicio::InventarioServicio(const std::string& archivo) 
-    : archivoInventario(archivo) {
-    cargarDesdeArchivo();
+/******************************************************************************
+ * Constructor: Inicializa el servicio con el nombre del archivo y crea la 
+ * estructura de directorios organizada usando el sistema de archivos.
+ * 
+ * @param nombreArchivo Nombre base del archivo (ej: "inventario.dat")
+ ******************************************************************************/
+InventarioServicio::InventarioServicio(const std::string& nombreArchivo) {
+    try {
+        // Crear estructura organizada de directorios y obtener ruta completa
+        rutaArchivo = FileSistem::escribirArchivoBinarioOrganizado(
+            nombreArchivo,    // Nombre del archivo
+            "Inventario",     // Modelo (primer nivel de directorio)
+            0,                // Año (0 = no usar nivel de año)
+            ""                // Mes (vacío = no usar nivel de mes)
+        );
+        
+        // Crear el archivo si no existe
+        std::ofstream archivo(rutaArchivo, std::ios::app);
+        if (archivo.is_open()) {
+            archivo.close();
+        }
+        
+        // Cargar datos existentes
+        cargarDesdeArchivo();
+        
+    } catch (const std::exception& e) {
+        // Manejo de errores en la creación de directorios/archivos
+        std::cerr << "\n[ERROR] " << e.what() << std::endl;
+        rutaArchivo = nombreArchivo; // Usar ruta simple como fallback
+        MenuUtils::pausar();
+    }
 }
 
+/******************************************************************************
+ * Agregar un nuevo lote al inventario.
+ * 
+ * @param nuevoLote Lote a agregar. Se guarda automáticamente en archivo.
+ ******************************************************************************/
 void InventarioServicio::agregarLote(const Inventario& nuevoLote) {
     inventarios.push_back(nuevoLote);
-    // Guardar en archivo...
+    guardarEnArchivo(); // Persistir en el archivo organizado
     std::cout << "Lote agregado exitosamente.\n";
 }
 
@@ -58,6 +90,12 @@ bool InventarioServicio::existenMedicamentos() const {
     return !inventarios.empty();
 }
 
+/******************************************************************************
+ * Agregar un nuevo medicamento al inventario.
+ * 
+ * Solicita datos al usuario, crea el medicamento y su primer lote,
+ * y guarda automáticamente en el archivo organizado.
+ ******************************************************************************/
 void InventarioServicio::agregarMedicamento() {
     std::string nombre, codigo, unidad, presentacion;
     
@@ -204,6 +242,12 @@ void InventarioServicio::aumentarStock() {
     guardarEnArchivo();
 }
 
+/******************************************************************************
+ * Aumentar el stock de un medicamento existente.
+ * 
+ * @param nombreMedicamento Nombre del medicamento a actualizar.
+ * Agrega un nuevo lote y guarda en el archivo organizado.
+ ******************************************************************************/
 void InventarioServicio::aumentarStock(const std::string& nombreMedicamento) {
     auto it = std::find_if(inventarios.begin(), inventarios.end(), 
         [&](const Inventario& med) { return med.getNombre() == nombreMedicamento; });
@@ -276,6 +320,14 @@ void InventarioServicio::descontarMedicamento() {
     }
 }
 
+/******************************************************************************
+ * Descontar cantidad de un medicamento (versión con parámetros).
+ * 
+ * @param medicamento Nombre del medicamento
+ * @param cantidad Cantidad a descontar
+ * @return true si se pudo descontar, false en caso contrario
+ * Guarda automáticamente en el archivo organizado si tiene éxito.
+ ******************************************************************************/
 bool InventarioServicio::descontarMedicamento(const std::string& medicamento, int cantidad) {
     auto it = std::find_if(inventarios.begin(), inventarios.end(), 
         [&](const Inventario& med) { return med.getNombre() == medicamento; });
@@ -295,8 +347,13 @@ bool InventarioServicio::descontarMedicamento(const std::string& medicamento, in
     
 }
 
+/******************************************************************************
+ * Cargar datos desde el archivo CSV organizado en la estructura de directorios.
+ * 
+ * Lee y parsea el archivo CSV, cargando medicamentos y sus lotes en memoria.
+ ******************************************************************************/
 void InventarioServicio::cargarDesdeArchivo() {
-    std::ifstream archivo(archivoInventario);
+    std::ifstream archivo(rutaArchivo); // Usar ruta completa
     if (!archivo.is_open()) {
         std::cout << "Creando nuevo archivo de inventario..." << std::endl;
         return;
@@ -348,10 +405,15 @@ void InventarioServicio::cargarDesdeArchivo() {
     archivo.close();
 }
 
+/******************************************************************************
+ * Guardar datos en el archivo CSV organizado en la estructura de directorios.
+ * 
+ * Escribe todos los medicamentos y sus lotes en formato CSV en el archivo.
+ ******************************************************************************/
 void InventarioServicio::guardarEnArchivo() const {
-    std::ofstream archivo(archivoInventario);
+    std::ofstream archivo(rutaArchivo); // Usar ruta completa
     if (!archivo.is_open()) {
-        std::cerr << "Error al abrir el archivo para guardar: " << archivoInventario << std::endl;
+        std::cerr << "Error al abrir el archivo para guardar: " << rutaArchivo << std::endl;
         return;
     }
 
