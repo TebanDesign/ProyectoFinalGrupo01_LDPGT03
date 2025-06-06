@@ -5,8 +5,28 @@
 
 #include "modelos/tratamiento.h"
 #include "menu/MenuUtils.h"
+#include <ctime>
+#include <experimental/filesystem>
+namespace fs = std::experimental::filesystem;
 
 using namespace std;
+
+std::string obtenerRutaArchivoTratamientos() {
+    time_t now = time(nullptr);
+    tm* ltm = localtime(&now);
+
+    int year = 1900 + ltm->tm_year;
+    int month = 1 + ltm->tm_mon;
+    int day = ltm->tm_mday;
+
+    std::string ruta = "Data_ClinicaDentalRP/Tratamientos/" +
+        std::to_string(year) + "/" +
+        (month < 10 ? "0" : "") + std::to_string(month) + "/" +
+        (day < 10 ? "0" : "") + std::to_string(day);
+
+    fs::create_directories(ruta);  // Asegura que la carpeta exista
+    return ruta + "/tratamientos.dat";
+}
 
 // Constructor
 Tratamiento::Tratamiento(string dui, string med, string dos, string frec,
@@ -16,7 +36,6 @@ Tratamiento::Tratamiento(string dui, string med, string dos, string frec,
 
 // Registro de nuevo tratamiento
 void Tratamiento::registrar() {
-    cin.ignore(numeric_limits<streamsize>::max(), '\n');
     MenuUtils::mostrarTitulo("Registrar Tratamiento", MenuUtils::MAGENTA);
     cout << "DUI del paciente: "; getline(cin, duiPaciente);
     cout << "Medicamento: "; getline(cin, medicamento);
@@ -26,7 +45,7 @@ void Tratamiento::registrar() {
     cout << "Observaciones: "; getline(cin, observaciones);
     cout << "Estado: "; getline(cin, estado);
 
-    ofstream archivo("./output/tratamientos.dat", ios::binary | ios::app);
+    ofstream archivo(obtenerRutaArchivoTratamientos(), ios::binary | ios::app);
     if (archivo.is_open()) {
         auto writeStr = [&](const string& str) {
             size_t len = str.size();
@@ -113,7 +132,8 @@ string Tratamiento::getObservaciones() const { return observaciones; }
 void editarTratamientoEnArchivo(const string& dui, const string& med) {
     vector<Tratamiento> lista = cargarTratamientosDesdeArchivo();
     bool encontrado = false;
-    ofstream archivo("./output/tratamientos.dat", ios::binary | ios::trunc);
+    ofstream archivo(obtenerRutaArchivoTratamientos(), ios::binary | ios::trunc);
+
     if (!archivo.is_open()) {
         MenuUtils::mostrarMensajeError("No se pudo abrir el archivo para editar.");
         return;
@@ -147,7 +167,7 @@ void editarTratamientoEnArchivo(const string& dui, const string& med) {
 void eliminarTratamientoEnArchivo(const string& dui, const string& med) {
     vector<Tratamiento> lista = cargarTratamientosDesdeArchivo();
     bool encontrado = false;
-    ofstream archivo("./output/tratamientos.dat", ios::binary | ios::trunc);
+    ofstream archivo(obtenerRutaArchivoTratamientos(), ios::binary | ios::trunc);
     if (!archivo.is_open()) {
         MenuUtils::mostrarMensajeError("No se pudo abrir el archivo para eliminar.");
         return;
@@ -179,29 +199,35 @@ void eliminarTratamientoEnArchivo(const string& dui, const string& med) {
 
 // Leer tratamientos desde archivo
 vector<Tratamiento> cargarTratamientosDesdeArchivo() {
-    ifstream archivo("./output/tratamientos.dat", ios::binary);
     vector<Tratamiento> lista;
-    if (!archivo.is_open()) return lista;
 
-    auto readStr = [&](string& str) {
-        size_t len;
-        archivo.read((char*)&len, sizeof(size_t));
-        str.resize(len);
-        archivo.read(&str[0], len);
-    };
+    for (const auto& p : fs::recursive_directory_iterator("Data_ClinicaDentalRP/Tratamientos")) {
+        if (p.path().filename() == "tratamientos.dat") {
+            ifstream archivo(p.path().string(), ios::binary);
+            if (!archivo.is_open()) continue;
 
-    while (archivo.peek() != EOF) {
-        string dui, med, dos, frec, dur, obs, est;
-        readStr(dui);
-        readStr(med);
-        readStr(dos);
-        readStr(frec);
-        readStr(dur);
-        readStr(obs);
-        readStr(est);
-        lista.emplace_back(dui, med, dos, frec, dur, obs, est);
+            auto readStr = [&](string& str) {
+                size_t len;
+                archivo.read((char*)&len, sizeof(size_t));
+                str.resize(len);
+                archivo.read(&str[0], len);
+            };
+
+            while (archivo.peek() != EOF) {
+                string dui, med, dos, frec, dur, obs, est;
+                readStr(dui);
+                readStr(med);
+                readStr(dos);
+                readStr(frec);
+                readStr(dur);
+                readStr(obs);
+                readStr(est);
+                lista.emplace_back(dui, med, dos, frec, dur, obs, est);
+            }
+            archivo.close();
+        }
     }
-    archivo.close();
+
     return lista;
 }
 
