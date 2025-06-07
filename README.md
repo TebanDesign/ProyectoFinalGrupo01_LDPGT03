@@ -46,7 +46,6 @@ Desarrollar una aplicación de consola que permita gestionar los diferentes aspe
 - [Visual Studio Code](https://code.visualstudio.com/)
 - Extensiones: [C/C++](https://marketplace.visualstudio.com/items?itemName=ms-vscode.cpptools)
 - Compilador: [TDM-GCC 64](https://jmeubank.github.io/tdm-gcc/)
-- Sistema operativo: Windows
 
 ### 🔧 Compilación desde VS Code
 
