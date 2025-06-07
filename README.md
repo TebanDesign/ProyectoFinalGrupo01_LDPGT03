@@ -4,13 +4,11 @@
 
 Sistema de gestión clínica desarrollado en **C++** como parte del curso de **Lógica de Programación** en la **Universidad de El Salvador**, Facultad Multidisciplinaria de Occidente.
 
----
 
 ## 🎯 Objetivo
 
 Desarrollar una aplicación de consola que permita gestionar los diferentes aspectos de una clínica dental: pacientes, citas, tratamientos y medicamentos. El sistema utiliza estructuras de datos, algoritmos y archivos binarios para almacenamiento persistente.
 
----
 
 ## ⚙️ Tecnologías Utilizadas
 
@@ -19,7 +17,6 @@ Desarrollar una aplicación de consola que permita gestionar los diferentes aspe
 - **Archivos:** Binarios `.dat`
 - **Control de versiones:** Git / GitHub
 
----
 
 ## 🧩 Funcionalidades Principales
 
@@ -30,7 +27,6 @@ Desarrollar una aplicación de consola que permita gestionar los diferentes aspe
 - 📅 **Gestión de citas** (agenda con validación de horarios)
 - 📊 **Reportes** (visualización de datos almacenados)
 
----
 
 ## 🧑‍🤝‍🧑 Equipo de Desarrollo
 
@@ -42,7 +38,6 @@ Desarrollar una aplicación de consola que permita gestionar los diferentes aspe
 | Luis Daniel Contreras Rivera     | Gestión de Tratamientos   |
 | Eileen Marisol Reyes Rodríguez   | Gestión de Citas          |
 
----
 
 ## 🖥️ Cómo Ejecutar el Proyecto
 
@@ -63,7 +58,6 @@ Desarrollar una aplicación de consola que permita gestionar los diferentes aspe
    "command": "C:\\TDM-GCC-64\\bin\\g++.exe", // Ruta del compilador gcc/g++
    ```
    y modifica la ruta para que apunte al compilador que tengas instalado.
----
 
 ### 📁 Estructura del Proyecto
 
@@ -99,7 +93,6 @@ DEVELOPMENT.md
 📅 Ciclo I / 2025  
 📚 Asignatura: Lógica de Programación GT03
 
----
 
 ## 📄 Licencia
 
