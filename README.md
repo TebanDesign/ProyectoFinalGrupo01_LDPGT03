@@ -55,10 +55,14 @@ Desarrollar una aplicación de consola que permita gestionar los diferentes aspe
 
 ### 🔧 Compilación desde VS Code
 
-1. Asegúrate de tener el entorno de tareas (`tasks.json`) y configuración de depuración (`launch.json`) dentro de la carpeta `.vscode`.
-2. Presiona `Ctrl+Shift+B` para compilar.
-3. Ejecuta la tarea `Compilar_Ejecutar_ClinicaDentalRP`.
-
+1. Asegúrate de tener el entorno de tareas (`tasks.json`) y configuración de depuración (`launch.json`) dentro de la carpeta `.vscode`.  
+2. Presiona `Ctrl+Shift+B` para compilar.  
+3. Ejecuta la tarea `Compilar_Ejecutar_ClinicaDentalRP`.  
+4. **Si usas un compilador diferente a TDM-GCC**, ve al archivo `tasks.json`, línea 7, donde está:  
+   ```
+   "command": "C:\\TDM-GCC-64\\bin\\g++.exe", // Ruta del compilador gcc/g++
+   ```
+   y modifica la ruta para que apunte al compilador que tengas instalado.
 ---
 
 ### 📁 Estructura del Proyecto
