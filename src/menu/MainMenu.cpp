@@ -7,6 +7,7 @@
 #include "menu/InventarioMenu.h"
 #include "servicios/LoginService.h"
 
+// Constructor del menú principal, recibe punteros a los submenús y los convierte en smart pointers
 MainMenu::MainMenu(PacienteMenu* pacienteMenu, CitasMenu* citasMenu, TratamientoMenu* tratamientoMenu, InventarioMenu* inventarioMenu) {
     this->pacienteMenu = std::unique_ptr<PacienteMenu>(pacienteMenu);
     this->citasMenu = std::unique_ptr<CitasMenu>(citasMenu);
@@ -14,60 +15,61 @@ MainMenu::MainMenu(PacienteMenu* pacienteMenu, CitasMenu* citasMenu, Tratamiento
     this->inventarioMenu = std::unique_ptr<InventarioMenu>(inventarioMenu);
 }
 
+// Ejecuta el menú principal del sistema
 void MainMenu::ejecutar() {
-    
     int opcion;
     do {
-        mostrarMenuPrincipal();
-        opcion = MenuUtils::leerOpcion(0, 5);
+        mostrarMenuPrincipal(); // Muestra el menú
+        opcion = MenuUtils::leerOpcion(0, 5); // Lee opción válida entre 0 y 5
 
         switch(opcion) {
             case 1:
                 MenuUtils::limpiarPantalla();
                 MenuUtils::mostrarCargando("Cargando módulo de pacientes");
-                pacienteMenu->ejecutar();
+                pacienteMenu->ejecutar(); // Llama al submenú de pacientes
                 break;
             case 2:
                 MenuUtils::limpiarPantalla();
                 MenuUtils::mostrarCargando("Cargando módulo de citas");
-                citasMenu->ejecutar();
+                citasMenu->ejecutar(); // Llama al submenú de citas
                 break;
             case 3:
                 MenuUtils::limpiarPantalla();
                 MenuUtils::mostrarCargando("Cargando módulo de tratamientos");
-                tratamientoMenu->ejecutar();
+                tratamientoMenu->ejecutar(); // Llama al submenú de tratamientos
                 break;
             case 4:
                 MenuUtils::limpiarPantalla();
                 MenuUtils::mostrarCargando("Cargando módulo de inventario");
-                inventarioMenu->ejecutar();
+                inventarioMenu->ejecutar(); // Llama al submenú de inventario
                 break;
             case 5:
+                // Solicita confirmación para cerrar sesión
                 if (confirmarCerrarSesion()) {
                     LoginService::cerrarSesion();
-                    return; // Sale del menu principal para volver al login
+                    return; // Sale del menú principal (regresa al login)
                 }
                 break;
             case 0:
-                mostrarSalida();
+                mostrarSalida(); // Muestra mensaje de salida del sistema
                 break;
         }
-    } while(opcion != 0);
+    } while(opcion != 0); // Repite mientras no se seleccione "Salir"
 }
 
+// Muestra el menú principal con las opciones disponibles
 void MainMenu::mostrarMenuPrincipal() {
     MenuUtils::limpiarPantalla();
     
-    // logo/banner principal
-    mostrarBanner();
+    mostrarBanner(); // Muestra el banner decorativo
     
-    // titulo principal
+    // Título del sistema
     MenuUtils::mostrarTitulo("SISTEMA DE GESTIÓN DENTAL", MenuUtils::AZUL, MenuUtils::BLANCO);
     MenuUtils::mostrarSubtitulo("RATONCITO PÉREZ", MenuUtils::CYAN);
     
     std::cout << "\n";
     
-    // opciones del menu
+    // Opciones de navegación
     MenuUtils::mostrarOpcion(1, "Gestión de Pacientes");
     MenuUtils::mostrarOpcion(2, "Gestión de Citas");
     MenuUtils::mostrarOpcion(3, "Gestión de Tratamientos");
@@ -80,7 +82,7 @@ void MainMenu::mostrarMenuPrincipal() {
     std::cout << "\n";
 }
 
-// muestra el banner al entrar al sistema 
+// Muestra un banner decorativo al inicio del menú
 void MainMenu::mostrarBanner() {
     std::vector<std::string> banner = {
         "   +======================================+",
@@ -94,12 +96,12 @@ void MainMenu::mostrarBanner() {
     
     MenuUtils::cambiarColor(MenuUtils::NEGRO, MenuUtils::CYAN);
     for (const auto& linea : banner) {
-        MenuUtils::centrarTexto(linea);
+        MenuUtils::centrarTexto(linea); // Centra cada línea del banner
     }
-    MenuUtils::restaurarColor();
+    MenuUtils::restaurarColor(); // Restaura colores originales
 }
 
-// muestra en pantalla un mensaje de salida del sistema
+// Muestra un mensaje de despedida cuando el usuario decide salir del sistema
 void MainMenu::mostrarSalida() {
     MenuUtils::limpiarPantalla();
     
@@ -114,17 +116,17 @@ void MainMenu::mostrarSalida() {
         ""
     };
     
-    MenuUtils::mostrarCuadro(despedida, MenuUtils::VERDE);
-    
+    MenuUtils::mostrarCuadro(despedida, MenuUtils::VERDE); // Muestra cuadro con mensaje
+
     MenuUtils::mostrarMensaje("\nSaliendo del sistema", MenuUtils::AMARILLO);
-    MenuUtils::mostrarCargando("Cerrando");
+    MenuUtils::mostrarCargando("Cerrando"); // Simula proceso de salida
     
     std::cout << "\n";
-    MenuUtils::pausar();
-    MenuUtils::limpiarPantalla();
+    MenuUtils::pausar(); // Espera confirmación del usuario
+    MenuUtils::limpiarPantalla(); // Limpia la pantalla al final
 }
 
-// limpia la pantalla, sirve para windows, linux y macos
+// Limpia la pantalla, compatible con Windows y sistemas tipo Unix
 void MainMenu::limpiarPantalla() {
     #ifdef _WIN32
         system("cls");
@@ -133,9 +135,8 @@ void MainMenu::limpiarPantalla() {
     #endif
 }
 
-// metod que solicita la confirmacion para cerrara la sesion
+// Solicita al usuario confirmación para cerrar sesión
 bool MainMenu::confirmarCerrarSesion() {
-
     MenuUtils::limpiarPantalla();
     MenuUtils::mostrarTitulo("CERRAR SESIÓN", MenuUtils::ROJO, MenuUtils::BLANCO);
     std::cout << "\n";
@@ -143,9 +144,10 @@ bool MainMenu::confirmarCerrarSesion() {
     MenuUtils::mostrarMensajeAdvertencia("¿Está seguro que desea cerrar la sesión actual?");
     std::cout << "\n";
 
+    // Opciones de confirmación
     MenuUtils::mostrarOpcion(1, "Sí, cerrar sesión");
     MenuUtils::mostrarOpcion(2, "No, volver al menú");
     
-    int confirmacion = MenuUtils::leerOpcion(1, 2);
-    return (confirmacion == 1);
+    int confirmacion = MenuUtils::leerOpcion(1, 2); // Lee opción entre 1 y 2
+    return (confirmacion == 1); // Devuelve true si seleccionó cerrar sesión
 }
