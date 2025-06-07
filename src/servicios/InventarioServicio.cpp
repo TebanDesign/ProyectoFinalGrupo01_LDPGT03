@@ -106,7 +106,7 @@ void InventarioServicio::agregarMedicamento() {
     std::cout << "Codigo: ";
     std::getline(std::cin, codigo);
     
-    std::cout << "Unidad: ";
+    std::cout << "Unidad de medida: ";
     std::getline(std::cin, unidad);
     
     std::cout << "Presentacion: ";
