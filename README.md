@@ -1,33 +1,102 @@
-
-![Ingenieria en Desarrollo de Software (1)](https://github.com/user-attachments/assets/00de7ae6-c2e0-43fe-ab7c-dd6b595b68a8)
+![Ingeniería en Desarrollo de Software](https://github.com/user-attachments/assets/00de7ae6-c2e0-43fe-ab7c-dd6b595b68a8)
 
 # 🦷 Proyecto Clínica Dental "Ratoncito Pérez"
 
-Este proyecto ha sido desarrollado como parte de la asignatura **Lógica de Programación** de la **Universidad de El Salvador**, Facultad Multidisciplinaria de Occidente.
+Sistema de gestión clínica desarrollado en **C++** como parte del curso de **Lógica de Programación** en la **Universidad de El Salvador**, Facultad Multidisciplinaria de Occidente.
+
+---
 
 ## 🎯 Objetivo
-Desarrollar un sistema en **C++** para la gestión de pacientes, citas, tratamientos y medicamentos de una clínica dental, utilizando estructuras de datos, algoritmos y archivos binarios.
+
+Desarrollar una aplicación de consola que permita gestionar los diferentes aspectos de una clínica dental: pacientes, citas, tratamientos y medicamentos. El sistema utiliza estructuras de datos, algoritmos y archivos binarios para almacenamiento persistente.
+
+---
+
+## ⚙️ Tecnologías Utilizadas
+
+- **Lenguaje:** C++
+- **Compilador:** TDM-GCC 64 bits
+- **Archivos:** Binarios `.dat`
+- **Control de versiones:** Git / GitHub
+
+---
 
 ## 🧩 Funcionalidades Principales
 
-- **Gestión de Pacientes:** Registro, búsqueda y edición de pacientes.
-- **Gestión de Inventario:** Administración de medicamentos, cantidades y precios.
-- **Gestión de Tratamientos:** Control de tratamientos asignados a pacientes.
-- **Gestión de Citas:** Agendamiento de citas con validación de horarios.
-- **Reportes:** Visualización en pantalla de los datos almacenados.
+- 🔐 **Inicio de sesión seguro**
+- 👥 **Gestión de pacientes** (registro, búsqueda, edición)
+- 💊 **Gestión de inventario** (medicamentos, cantidades, precios)
+- 🦷 **Gestión de tratamientos** (asignación y control)
+- 📅 **Gestión de citas** (agenda con validación de horarios)
+- 📊 **Reportes** (visualización de datos almacenados)
 
-## 🛠️ Tecnologías
+---
 
-- Lenguaje: **C++**
-- Archivos: Binarios (`.dat`)
-- Control de versiones: **Git / GitHub**
+## 🧑‍🤝‍🧑 Equipo de Desarrollo
 
-## 🧑‍🤝‍🧑 Integrantes
+| Nombre                           | Módulo                    |
+|---------------------------------|---------------------------|
+| Franklin Esteban Pérez Fuentes   | Login                     |
+| Héctor Danilo Benítez Ortéz     | Gestión de Inventario     |
+| Rafael Armando Ibañez Diego      | Gestión de Pacientes      |
+| Luis Daniel Contreras Rivera     | Gestión de Citas          |
+| Eileen Marisol Reyes Rodríguez   | Gestión de Tratamientos   |
 
-- Integrante 1: FRANKLIN ESTEBAN PEREZ FUENTES – LOGIN
-- Integrante 2: Héctor Danilo Benítez Ortéz – GESTIÓN DE INVENTARIO
-- Integrante 3: Rafael Armando Ibañez Diego – GESTIÓN DE PACIENTES
-- Integrante 4: Luis Daniel Contreras Rivera – GESTIÓN DE CITAS
-- Integrante 5: Eileen Marisol Reyes Rodríguez – GESTIÓN DE TRATAMIENTOS
+---
 
+## 🖥️ Cómo Ejecutar el Proyecto
 
+### ✔️ Requisitos
+
+- [Visual Studio Code](https://code.visualstudio.com/)
+- Extensiones: [C/C++](https://marketplace.visualstudio.com/items?itemName=ms-vscode.cpptools)
+- Compilador: [TDM-GCC 64](https://jmeubank.github.io/tdm-gcc/)
+- Sistema operativo: Windows
+
+### 🔧 Compilación desde VS Code
+
+1. Asegúrate de tener el entorno de tareas (`tasks.json`) y configuración de depuración (`launch.json`) dentro de la carpeta `.vscode`.
+2. Presiona `Ctrl+Shift+B` para compilar.
+3. Ejecuta la tarea `Compilar_Ejecutar_ClinicaDentalRP`.
+
+---
+
+### 📁 Estructura del Proyecto
+
+```plaintext
+📂 .vscode/
+├── tasks.json
+├── launch.json
+
+📂 bin/                    → Ejecutables generados
+📂 Data_ClinicaDentalRP/   → Archivos binarios
+│   ├── Citas/
+│   ├── Inventario/
+│   └── Pacientes/
+📂 includes/               → Archivos .h organizados por módulos
+│   ├── menu/
+│   ├── modelos/
+│   └── servicios/
+📂 src/                    → Código fuente C++
+│   ├── menu/
+│   ├── modelos/
+│   ├── servicios/
+│   ├── utils/
+│   └── main.cpp
+📂 utils/                  → Utilidades adicionales
+.gitignore
+README.md
+DEVELOPMENT.md
+```
+
+## 🧪 Estado del Proyecto
+
+✅ Versión final estable  
+📅 Ciclo I / 2025  
+📚 Asignatura: Lógica de Programación GT03
+
+---
+
+## 📄 Licencia
+
+Distribuido bajo la licencia [MIT](LICENSE).
