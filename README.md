@@ -21,7 +21,7 @@ Desarrollar un sistema en **C++** para la gestión de pacientes, citas, tratamie
 
 ## 🧑‍🤝‍🧑 Integrantes
 
-- Integrante 1: FRANKLIN ESTEBAN PEREZ FUENTES – Login
+- Integrante 1: FRANKLIN ESTEBAN PEREZ FUENTES – LOGIN
 - Integrante 2: Héctor Danilo Benítez Ortéz – GESTIÓN DE INVENTARIO
 - Integrante 3: Rafael Armando Ibañez Diego – GESTIÓN DE PACIENTES
 - Integrante 4: Luis Daniel Contreras Rivera – GESTIÓN DE CITAS
