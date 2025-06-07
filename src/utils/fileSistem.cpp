@@ -1,67 +1,64 @@
 #include <fstream>
 #include <iostream>
 #include <filesystem>
+#include <windows.h> // Solo en Windows
 
 namespace fs = std::filesystem;
 
 #include "utils/fileSistem.h"
 
-std::string  FileSistem::escribirArchivoBinarioOrganizado(
+std::string FileSistem::escribirArchivoBinarioOrganizado(
     const std::string& nombreArchivo,
     const std::string& modelo,
     int anio,
     const std::string& mes)
 {
     try {
-
         if (modelo.empty() || nombreArchivo.empty()) {
-                 throw("Error: El nombre del modleo y archivo son requeridos");
-            }
-
-        // Construir la ruta base con el modelo
-        fs::path rutaCompleta = fs::current_path() / "Data_ClinicaDentalRP" / modelo;
-
-        // Construir la ruta jeraquica
-
-        // Se creara una carpeta con el año 
-         if (anio > 0) {
-            rutaCompleta = rutaCompleta / std::to_string(anio);
+            throw("Error: El nombre del modelo y archivo son requeridos");
         }
-        
-        // Se creara una carpeta con el mes
+
+        // Obtener la ruta del ejecutable
+        char buffer[MAX_PATH];
+        GetModuleFileNameA(NULL, buffer, MAX_PATH);
+        fs::path exePath = fs::path(buffer).parent_path();
+
+        // Subir un nivel desde /bin a raíz del proyecto
+        fs::path projectRoot = exePath.parent_path();
+
+        // Construir la ruta completa
+        fs::path rutaCompleta = projectRoot / "Data_ClinicaDentalRP" / modelo;
+
+        if (anio > 0) {
+            rutaCompleta /= std::to_string(anio);
+        }
+
         if (!mes.empty()) {
-            rutaCompleta = rutaCompleta / mes;
+            rutaCompleta /= mes;
         }
-        
-      // Crear los directorios si no existen
-        if (!std::filesystem::exists(rutaCompleta)) {
-            if (!std::filesystem::create_directories(rutaCompleta)) {
+
+        // Crear directorios si no existen
+        if (!fs::exists(rutaCompleta)) {
+            if (!fs::create_directories(rutaCompleta)) {
                 throw("Error: No se pudo crear la ruta");
             }
         }
 
-        // Agregar el nombre del archivo a la ruta
-        rutaCompleta = rutaCompleta / nombreArchivo;
-        
-        // Crear el archivo binario
-        std::ofstream archivo(rutaCompleta, std::ios::binary  | std::ios::app);
+        // Agregar el nombre del archivo
+        rutaCompleta /= nombreArchivo;
+
+        // Crear el archivo si no existe
+        std::ofstream archivo(rutaCompleta, std::ios::binary | std::ios::app);
         if (!archivo.is_open()) {
             throw("Error: No se pudo crear el archivo en la ruta");
         }
 
         archivo.close();
-
         return rutaCompleta.string();
 
     } catch (const std::filesystem::filesystem_error& e) {
-
-        std::string mensaje_completo = "Error del sistema de archivos: "  + std::string(e.what());
-        throw(mensaje_completo);
-
+        throw std::string("Error del sistema de archivos: ") + e.what();
     } catch (const std::exception& e) {
-        
-        std::string mensaje_completo = "Error: " + std::string(e.what());
-        throw(mensaje_completo);
-
+        throw std::string("Error: ") + e.what();
     }
 }
