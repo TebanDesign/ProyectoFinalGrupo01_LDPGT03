@@ -1,3 +1,6 @@
+
+![Ingenieria en Desarrollo de Software (1)](https://github.com/user-attachments/assets/00de7ae6-c2e0-43fe-ab7c-dd6b595b68a8)
+
 # 🦷 Proyecto Clínica Dental "Ratoncito Pérez"
 
 Este proyecto ha sido desarrollado como parte de la asignatura **Lógica de Programación** de la **Universidad de El Salvador**, Facultad Multidisciplinaria de Occidente.
