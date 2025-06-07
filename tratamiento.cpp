@@ -1,17 +1,26 @@
+<<<<<<< HEAD:tratamiento.cpp
 // Descripción: Implementación de funciones para gestionar tratamientos
 
 #include "tratamiento.h"
 #include "inventario.h"
 #include "encriptador.h"
 #include "paciente.h"
+=======
+>>>>>>> desarrollo:src/modelos/tratamiento.cpp
 #include <iostream>
 #include <fstream>
 #include <limits>
+#include <vector>
 
-// cambio en esta linea de codigo
+#include "modelos/tratamiento.h"
+#include "menu/MenuUtils.h"
+#include <ctime>
+#include <experimental/filesystem>
+namespace fs = std::experimental::filesystem;
 
 using namespace std;
 
+<<<<<<< HEAD:tratamiento.cpp
 void registrarTratamiento() {
     Tratamiento t;
     cout << "\n=== Registrar Tratamiento ===\n";
@@ -22,84 +31,235 @@ void registrarTratamiento() {
             cout << "Paciente no encontrado. Intente con un DUI válido.\n";
         }
     } while (!existeId(t.duiPaciente));
+=======
+std::string obtenerRutaArchivoTratamientos() {
+    time_t now = time(nullptr);
+    tm* ltm = localtime(&now);
 
-    cout << "Medicamento: ";
-    getline(cin, t.medicamento);
-    cout << "Dosis (ej: 2): ";
-    getline(cin, t.dosis);
-    cout << "Período: ";
-    getline(cin, t.periodo);
+    int year = 1900 + ltm->tm_year;
+    int month = 1 + ltm->tm_mon;
+    int day = ltm->tm_mday;
 
-    // Descontar medicamento del inventario
-    int cantidadADescontar = stoi(t.dosis); // suponiendo que la dosis es un número
-    cout << "[Depuración] Intentando descontar " << cantidadADescontar << " del medicamento '" << t.medicamento << "'...\n";
-    if (!descontarMedicamento(t.medicamento, cantidadADescontar)) {
-        cout << "Error: El medicamento no fue encontrado o no hay suficiente stock.\n";
-    } else {
-        cout << "[Depuración] Medicamento actualizado correctamente en inventario.\n";
-    }
+    std::string ruta = "Data_ClinicaDentalRP/Tratamientos/" +
+        std::to_string(year) + "/" +
+        (month < 10 ? "0" : "") + std::to_string(month) + "/" +
+        (day < 10 ? "0" : "") + std::to_string(day);
+>>>>>>> desarrollo:src/modelos/tratamiento.cpp
 
-    ofstream archivo("tratamientos.dat", ios::binary | ios::app);
+    fs::create_directories(ruta);  // Asegura que la carpeta exista
+    return ruta + "/tratamientos.dat";
+}
+
+// Constructor
+Tratamiento::Tratamiento(string dui, string med, string dos, string frec,
+                         string dur, string obs, string est)
+    : duiPaciente(dui), medicamento(med), dosis(dos), frecuencia(frec),
+      duracion(dur), observaciones(obs), estado(est) {}
+
+// Registro de nuevo tratamiento
+void Tratamiento::registrar() {
+    MenuUtils::mostrarTitulo("Registrar Tratamiento", MenuUtils::MAGENTA);
+    cout << "DUI del paciente: "; getline(cin, duiPaciente);
+    cout << "Medicamento: "; getline(cin, medicamento);
+    cout << "Dosis: "; getline(cin, dosis);
+    cout << "Frecuencia: "; getline(cin, frecuencia);
+    cout << "Duración: "; getline(cin, duracion);
+    cout << "Observaciones: "; getline(cin, observaciones);
+    cout << "Estado: "; getline(cin, estado);
+
+    ofstream archivo(obtenerRutaArchivoTratamientos(), ios::binary | ios::app);
     if (archivo.is_open()) {
-        string dosisCifrada = encriptar(t.dosis);
+        auto writeStr = [&](const string& str) {
+            size_t len = str.size();
+            archivo.write((char*)&len, sizeof(size_t));
+            archivo.write(str.c_str(), len);
+        };
 
-        size_t lenDui = t.duiPaciente.size();
-        size_t lenMedicamento = t.medicamento.size();
-        size_t lenDosis = dosisCifrada.size();
-        size_t lenPeriodo = t.periodo.size();
-
-        archivo.write((char*)&lenDui, sizeof(size_t));
-        archivo.write(t.duiPaciente.c_str(), lenDui);
-        archivo.write((char*)&lenMedicamento, sizeof(size_t));
-        archivo.write(t.medicamento.c_str(), lenMedicamento);
-        archivo.write((char*)&lenDosis, sizeof(size_t));
-        archivo.write(dosisCifrada.c_str(), lenDosis);
-        archivo.write((char*)&lenPeriodo, sizeof(size_t));
-        archivo.write(t.periodo.c_str(), lenPeriodo);
+        writeStr(duiPaciente);
+        writeStr(medicamento);
+        writeStr(dosis);
+        writeStr(frecuencia);
+        writeStr(duracion);
+        writeStr(observaciones);
+        writeStr(estado);
 
         archivo.close();
-        cout << "Tratamiento registrado exitosamente.\n";
+        MenuUtils::mostrarMensaje("Tratamiento registrado correctamente.", MenuUtils::VERDE);
     } else {
-        cerr << "Error al abrir el archivo de tratamientos.\n";
+        MenuUtils::mostrarMensajeError("No se pudo abrir el archivo para guardar el tratamiento.");
     }
 }
 
-void mostrarTratamientos() {
-    ifstream archivo("tratamientos.dat", ios::binary);
+// Mostrar tratamiento
+void Tratamiento::mostrar() const {
+    MenuUtils::mostrarSubtitulo("Tratamiento", MenuUtils::CYAN);
+    cout << "DUI: " << duiPaciente
+         << "\nMedicamento: " << medicamento
+         << "\nDosis: " << dosis
+         << "\nFrecuencia: " << frecuencia
+         << "\nDuración: " << duracion
+         << "\nObservaciones: " << observaciones
+         << "\nEstado: " << estado << "\n----------------------\n";
+}
+
+// Editar tratamiento (solo si se ingresan nuevos valores)
+void Tratamiento::editar() {
+    string input;
+    MenuUtils::mostrarTitulo("Editar Tratamiento", MenuUtils::MAGENTA);
+    cout << "Nueva dosis (actual: " << dosis << "): ";
+    getline(cin, input);
+    if (!input.empty()) dosis = input;
+
+    cout << "Nueva frecuencia (actual: " << frecuencia << "): ";
+    getline(cin, input);
+    if (!input.empty()) frecuencia = input;
+
+    cout << "Nueva duración (actual: " << duracion << "): ";
+    getline(cin, input);
+    if (!input.empty()) duracion = input;
+
+    cout << "Nuevas observaciones (actual: " << observaciones << "): ";
+    getline(cin, input);
+    if (!input.empty()) observaciones = input;
+
+    cout << "Nuevo estado (actual: " << estado << "): ";
+    getline(cin, input);
+    if (!input.empty()) estado = input;
+    MenuUtils::mostrarMensaje("Tratamiento actualizado.", MenuUtils::VERDE);
+}
+
+// Eliminar tratamiento (cambia el estado)
+void Tratamiento::eliminar() {
+    estado = "Eliminado";
+    MenuUtils::mostrarMensaje("Tratamiento marcado como eliminado.", MenuUtils::ROJO);
+}
+
+// Comparar tratamiento por DUI y Medicamento
+bool Tratamiento::coincideCon(const string& dui, const string& med) const {
+    return duiPaciente == dui && medicamento == med;
+}
+
+// Getters
+string Tratamiento::getDUI() const { return duiPaciente; }
+string Tratamiento::getMedicamento() const { return medicamento; }
+string Tratamiento::getEstado() const { return estado; }
+string Tratamiento::getDosis() const { return dosis; }
+string Tratamiento::getFrecuencia() const { return frecuencia; }
+string Tratamiento::getDuracion() const { return duracion; }
+string Tratamiento::getObservaciones() const { return observaciones; }
+
+// Funciones de archivo
+
+// Buscar y editar tratamiento en archivo
+void editarTratamientoEnArchivo(const string& dui, const string& med) {
+    vector<Tratamiento> lista = cargarTratamientosDesdeArchivo();
+    bool encontrado = false;
+    ofstream archivo(obtenerRutaArchivoTratamientos(), ios::binary | ios::trunc);
+
     if (!archivo.is_open()) {
-        cerr << "No se pudo abrir el archivo de tratamientos.\n";
+        MenuUtils::mostrarMensajeError("No se pudo abrir el archivo para editar.");
         return;
     }
-
-    cout << "\n=== Lista de Tratamientos ===\n";
-    while (archivo.peek() != EOF) {
-        size_t lenDui, lenMedicamento, lenDosis, lenPeriodo;
-        archivo.read((char*)&lenDui, sizeof(size_t));
-        if (archivo.eof()) break;
-        string dui(lenDui, ' ');
-        archivo.read(&dui[0], lenDui);
-
-        archivo.read((char*)&lenMedicamento, sizeof(size_t));
-        string medicamento(lenMedicamento, ' ');
-        archivo.read(&medicamento[0], lenMedicamento);
-
-        archivo.read((char*)&lenDosis, sizeof(size_t));
-        string dosis(lenDosis, ' ');
-        archivo.read(&dosis[0], lenDosis);
-
-        archivo.read((char*)&lenPeriodo, sizeof(size_t));
-        string periodo(lenPeriodo, ' ');
-        archivo.read(&periodo[0], lenPeriodo);
-
-        cout << "Paciente DUI: " << dui
-             << "\nMedicamento: " << medicamento
-             << "\nDosis: " << desencriptar(dosis)
-             << "\nPeríodo: " << periodo
-             << "\n----------------------\n";
+    for (auto& t : lista) {
+        if (t.coincideCon(dui, med)) {
+            encontrado = true;
+            t.editar();
+        }
+    }
+    for (const auto& t : lista) {
+        auto writeStr = [&](const string& str) {
+            size_t len = str.size();
+            archivo.write((char*)&len, sizeof(size_t));
+            archivo.write(str.c_str(), len);
+        };
+        writeStr(t.getDUI());
+        writeStr(t.getMedicamento());
+        writeStr(t.getDosis());
+        writeStr(t.getFrecuencia());
+        writeStr(t.getDuracion());
+        writeStr(t.getObservaciones());
+        writeStr(t.getEstado());
     }
     archivo.close();
+    if (encontrado) MenuUtils::mostrarMensaje("Tratamiento editado exitosamente.", MenuUtils::VERDE);
+    else MenuUtils::mostrarMensaje("Tratamiento no encontrado.", MenuUtils::ROJO);
 }
 
-void editarTratamiento() {
-    cout << "\nFuncionalidad de edición de tratamientos pendiente de implementación.\n";
+// Buscar y marcar como eliminado
+void eliminarTratamientoEnArchivo(const string& dui, const string& med) {
+    vector<Tratamiento> lista = cargarTratamientosDesdeArchivo();
+    bool encontrado = false;
+    ofstream archivo(obtenerRutaArchivoTratamientos(), ios::binary | ios::trunc);
+    if (!archivo.is_open()) {
+        MenuUtils::mostrarMensajeError("No se pudo abrir el archivo para eliminar.");
+        return;
+    }
+    for (auto& t : lista) {
+        if (t.coincideCon(dui, med)) {
+            encontrado = true;
+            t.eliminar();
+        }
+    }
+    for (const auto& t : lista) {
+        auto writeStr = [&](const string& str) {
+            size_t len = str.size();
+            archivo.write((char*)&len, sizeof(size_t));
+            archivo.write(str.c_str(), len);
+        };
+        writeStr(t.getDUI());
+        writeStr(t.getMedicamento());
+        writeStr(t.getDosis());
+        writeStr(t.getFrecuencia());
+        writeStr(t.getDuracion());
+        writeStr(t.getObservaciones());
+        writeStr(t.getEstado());
+    }
+    archivo.close();
+    if (encontrado) MenuUtils::mostrarMensaje("Tratamiento eliminado correctamente.", MenuUtils::ROJO);
+    else MenuUtils::mostrarMensaje("Tratamiento no encontrado.", MenuUtils::ROJO);
+}
+
+// Leer tratamientos desde archivo
+vector<Tratamiento> cargarTratamientosDesdeArchivo() {
+    vector<Tratamiento> lista;
+
+    for (const auto& p : fs::recursive_directory_iterator("Data_ClinicaDentalRP/Tratamientos")) {
+        if (p.path().filename() == "tratamientos.dat") {
+            ifstream archivo(p.path().string(), ios::binary);
+            if (!archivo.is_open()) continue;
+
+            auto readStr = [&](string& str) {
+                size_t len;
+                archivo.read((char*)&len, sizeof(size_t));
+                str.resize(len);
+                archivo.read(&str[0], len);
+            };
+
+            while (archivo.peek() != EOF) {
+                string dui, med, dos, frec, dur, obs, est;
+                readStr(dui);
+                readStr(med);
+                readStr(dos);
+                readStr(frec);
+                readStr(dur);
+                readStr(obs);
+                readStr(est);
+                lista.emplace_back(dui, med, dos, frec, dur, obs, est);
+            }
+            archivo.close();
+        }
+    }
+
+    return lista;
+}
+
+// Mostrar tratamientos activos por paciente
+void mostrarTratamientosPorDUI(const string& dui) {
+    vector<Tratamiento> lista = cargarTratamientosDesdeArchivo();
+    MenuUtils::mostrarTitulo("Tratamientos del paciente: " + dui, MenuUtils::CYAN);
+    for (const auto& t : lista) {
+        if (t.getDUI() == dui && t.getEstado() != "Eliminado") {
+            t.mostrar();
+        }
+    }
 }
