@@ -4,7 +4,7 @@
 		{
 			"type": "cppbuild",
 			"label": "Compilar_ClinicaDentalRP",
-			"command": "C:\\TDM-GCC-64\\bin\\g++.exe",
+			"command": "C:\\TDM-GCC-64\\bin\\g++.exe", // Ruta del compilador gcc/g++
 			"args": [
 				"-fdiagnostics-color=always",
 				"-g",
