@@ -35,12 +35,12 @@ Desarrollar una aplicación de consola que permita gestionar los diferentes aspe
 ## 🧑‍🤝‍🧑 Equipo de Desarrollo
 
 | Nombre                           | Módulo                    |
-|---------------------------------|---------------------------|
+|--------------------------------- |---------------------------|
 | Franklin Esteban Pérez Fuentes   | Login                     |
-| Héctor Danilo Benítez Ortéz     | Gestión de Inventario     |
+| Héctor Danilo Benítez Ortéz      | Gestión de Inventario     |
 | Rafael Armando Ibañez Diego      | Gestión de Pacientes      |
-| Luis Daniel Contreras Rivera     | Gestión de Citas          |
-| Eileen Marisol Reyes Rodríguez   | Gestión de Tratamientos   |
+| Luis Daniel Contreras Rivera     | Gestión de Tratamientos   |
+| Eileen Marisol Reyes Rodríguez   | Gestión de Citas          |
 
 ---
 
